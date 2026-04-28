@@ -1,5 +1,4 @@
 import random
-import math
 from player import Player
 
 
@@ -13,7 +12,7 @@ def enter_information():
             break
 
     player = Player(player_name)
-    print(f"Welcome {player.display_name()}!\n"
+    print(f"\nWelcome {player.display_name()}!\n"
           f"\nHere are your current stats:\n")
     show_stats(player)
     return player
@@ -25,7 +24,37 @@ def show_stats(player):
           f"Season Goals: {player.display_season_goals()}\n"
           f"Season Assists: {player.display_season_assists()}")
 
-def match(player, opponent_defense):
+def get_league_data(filename):
+    teams = []
+    with open(filename, "r") as file:
+        lines = file.readlines()[1:]
+        for line in lines:
+            parts = line.strip().split(",")
+
+            team = {"name":parts[0],
+                    "attack":int(parts[1]),
+                    "defense":int(parts[2]),
+                    "reputation":int(parts[3])}
+            teams.append(team)
+    return teams
+
+def check_ready(player, opponent_name, opponent_defense):
+    while True:
+        begin_message = input("\nAre you ready to begin the match (y/n)?: ")
+        if begin_message.lower() == "y":
+            match(player, opponent_name, opponent_defense)
+            break
+        else:
+            print("Whenever you're ready!")
+
+def matchday_team(teams, teams_played):
+    team = random.choice(teams)
+    teams.remove(team)
+    teams_played.append(team)
+    return team
+
+def match(player, opponent_name, opponent_defense):
+    print(f"Opponent: {opponent_name}")
     print("\nThe referee blows the whistle and the match begins!")
     shot_attempts = random.randint(2,8)
     pass_attempts = random.randint(2,8)
@@ -50,7 +79,7 @@ def match(player, opponent_defense):
     player_rating = player.calculate_match_rating()
     print(f"\nFinal match rating: {player_rating}")
 
-    added_skill_points = math.floor(player_rating)
+    added_skill_points = int(player_rating)
     player.skill_point_collection(added_skill_points)
 
 
@@ -81,10 +110,16 @@ def post_match(player):
 
 
 def main():
+
+    teams = get_league_data("PL_teams.txt")
+    teams_played = []
+
     player = enter_information()
-    opponent_defense = 75
-    match(player,opponent_defense)
+    opponent = matchday_team(teams, teams_played)
+    opponent_name, opponent_defense = opponent["name"], opponent["defense"]
+    check_ready(player, opponent_name ,opponent_defense)
     post_match(player)
+
 
 
 if __name__ == "__main__":
