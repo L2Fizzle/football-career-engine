@@ -1,20 +1,20 @@
 Team_name,attack_rating,defense_rating,reputation
-Arsenal,85,90,90
-Manchester City,88,86,95
-Aston Villa,83,80,83
-Manchester United,85,78,88
-Chelsea,81,79,85
-Liverpool,82,77,89
-Brentford,78,76,75
-Everton,74,73,72
-Bournemouth,74,74,70
-Sunderland,75,73,73
-Fulham,72,73,68
-Crystal Palace,71,72,65
-Brighton & Hove Albion,71,71,67
-Leeds United,70,70,66
-Tottenham Hotspur,69,71,80
-Nottingham Forest,68,72,60
-West Ham United,67,74,70
-Burnley,65,69,50
-Wolves,60,65,48
+Arsenal,8.5,9.0,9.0
+Manchester City,8.8,8.6,9.5
+Aston Villa,8.3,8.0,8.3
+Manchester United,8.5,7.8,8.8
+Chelsea,7.6,7.5,8.5
+Liverpool,8.2,7.7,8.9
+Brentford,7.8,7.6,7.5
+Everton,7.4,7.3,7.2
+Bournemouth,7.4,7.4,7.0
+Sunderland,7.5,7.3,7.3
+Fulham,7.2,7.3,6.8
+Crystal Palace,7.1,7.2,6.5
+Brighton & Hove Albion,7.1,7.1,6.7
+Leeds United,7.0,7.0,6.6
+Tottenham Hotspur,6.9,7.1,8.0
+Nottingham Forest,6.8,7.2,6.0
+West Ham United,6.7,7.4,7.0
+Burnley,6.5,6.9,5.0
+Wolves,6.0,6.5,4.8

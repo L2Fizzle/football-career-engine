@@ -1,4 +1,5 @@
 import random
+import time
 from player import Player
 
 
@@ -13,16 +14,59 @@ def enter_information():
 
     player = Player(player_name)
     print(f"\nWelcome {player.display_name()}!\n"
-          f"\nHere are your current stats:\n")
+          f"\nHere are your current attributes:\n")
+    player.generate_attributes()
     show_stats(player)
     return player
 
 def show_stats(player):
-    print(f"Shooting: {player.display_shooting()}\n"
-          f"Passing: {player.display_passing()}\n"
-          f"Dribbling: {player.display_dribbling()}\n"
-          f"Season Goals: {player.display_season_goals()}\n"
-          f"Season Assists: {player.display_season_assists()}")
+    print("Generating player...")
+    time.sleep(2)
+
+    print(f"Position: {player.display_position()}")
+    time.sleep(2)
+
+    print("Pace: ", end = "")
+    time.sleep(2)
+    print(player.display_pace())
+
+    time.sleep(1)
+
+    print("Shooting: ", end = "")
+    time.sleep(2)
+    print(player.display_shooting())
+
+    time.sleep(1)
+
+    print("Passing: ", end = "")
+    time.sleep(2)
+    print(player.display_passing())
+
+    time.sleep(1)
+
+    print("Dribbling: ", end = "")
+    time.sleep(2)
+    print(player.display_dribbling())
+
+    time.sleep(1)
+
+    print("Defending: ", end = "")
+    time.sleep(2)
+    print(player.display_defending())
+
+    time.sleep(1)
+
+    print("Strength: ", end = "")
+    time.sleep(2)
+    print(player.display_strength())
+
+    time.sleep(1)
+
+    print("Football IQ: ", end = "")
+    time.sleep(2)
+    print(player.display_iq())
+
+    time.sleep(1)
 
 def get_league_data(filename):
     teams = []
@@ -32,18 +76,17 @@ def get_league_data(filename):
             parts = line.strip().split(",")
 
             team = {"name":parts[0],
-                    "attack":int(parts[1]),
-                    "defense":int(parts[2]),
-                    "reputation":int(parts[3])}
+                    "attack":float(parts[1]),
+                    "defense":float(parts[2]),
+                    "reputation":float(parts[3])}
             teams.append(team)
     return teams
 
-def check_ready(player, opponent_name, opponent_defense):
+def check_ready(player):
     while True:
         begin_message = input("\nAre you ready to begin the match (y/n)?: ")
         if begin_message.lower() == "y":
-            match(player, opponent_name, opponent_defense)
-            break
+            return
         else:
             print("Whenever you're ready!")
 
@@ -56,15 +99,15 @@ def matchday_team(teams, teams_played):
 def match(player, opponent_name, opponent_defense):
     print(f"Opponent: {opponent_name}")
     print("\nThe referee blows the whistle and the match begins!")
-    shot_attempts = random.randint(2,8)
-    pass_attempts = random.randint(2,8)
-    dribble_attempts = random.randint(2,8)
+    shot_attempts = random.randint(0,int(player.shooting/2))
+    key_pass_attempts = random.randint(0,int(player.playmaking_ability/2))
+    dribble_attempts = random.randint(0,int(player.dribbling/2))
 
 
     for shot in range(shot_attempts):
         player.shot_attempt(opponent_defense)
 
-    for ball in range(pass_attempts):
+    for ball in range(key_pass_attempts):
         player.key_pass(opponent_defense)
 
     for dribble in range(dribble_attempts):
@@ -79,47 +122,21 @@ def match(player, opponent_name, opponent_defense):
     player_rating = player.calculate_match_rating()
     print(f"\nFinal match rating: {player_rating}")
 
-    added_skill_points = int(player_rating)
-    player.skill_point_collection(added_skill_points)
-
-
     player.clear_match_stats()
-
-def post_match(player):
-    print(f"Congrats! You earned {player.display_skill_points()} skill points!")
-
-    while player.skill_points > 0:
-        print("\nUpgrade shooting (s), passing (p), dribbling (d)?")
-        choice = input("Choose stat: ").lower()
-
-        if choice == "s":
-            player.shooting += 1
-        elif choice == "p":
-            player.passing += 1
-        elif choice == "d":
-            player.dribbling += 1
-        else:
-            print("Sorry, that was not one of the options. Try again.")
-            continue
-
-        player.remove_skill_point()
-        print(f"Remaining points: {player.skill_points}")
-
-    print("\nHere are your stats after today's match:\n")
-    show_stats(player)
+    player.clear_player_rating()
 
 
 def main():
 
     teams = get_league_data("PL_teams.txt")
     teams_played = []
-
     player = enter_information()
-    opponent = matchday_team(teams, teams_played)
-    opponent_name, opponent_defense = opponent["name"], opponent["defense"]
-    check_ready(player, opponent_name ,opponent_defense)
-    post_match(player)
 
+    while teams:
+        check_ready(player)
+        opponent = matchday_team(teams, teams_played)
+        opponent_name, opponent_defense = opponent["name"], opponent["defense"]
+        match(player,opponent_name, opponent_defense)
 
 
 if __name__ == "__main__":
