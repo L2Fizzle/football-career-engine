@@ -152,15 +152,18 @@ def simulate_season(full_teams,player,user_team):
                                                              user_team["defense"], user_team["reputation"])
 
     check_ready()
+    matchday = 1
     while full_teams:
         opponent = matchday_team(full_teams, teams_played_once)
         opponent_name, opponent_attack, opponent_defense, opponent_reputation = (opponent["name"],
                                                                                  opponent["attack"],
                                                                                  opponent["defense"],
                                                                                  opponent["reputation"])
+        print(f"Matchday {matchday}")
         match(player, team_name, team_attack, team_defence, team_reputation,
               opponent_name, opponent_attack, opponent_defense, opponent_reputation)
         time.sleep(3)
+        matchday += 1
 
     while teams_played_once:
         opponent = matchday_team(teams_played_once, teams_played_twice)
@@ -168,9 +171,11 @@ def simulate_season(full_teams,player,user_team):
                                                                                  opponent["attack"],
                                                                                  opponent["defense"],
                                                                                  opponent["reputation"])
+        print(f"Matchday {matchday}")
         match(player, team_name, team_attack, team_defence, team_reputation,
               opponent_name, opponent_attack, opponent_defense, opponent_reputation)
         time.sleep(3)
+        matchday += 1
 
     print("*"*30)
     print("-"*9, "SEASON STATS", "-"*9)
@@ -198,6 +203,7 @@ def career(teams):
 def main():
 
     full_teams = get_league_data("PL_teams.txt")
+    print(len(full_teams))
 
     career(full_teams)
 
