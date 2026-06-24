@@ -15,10 +15,7 @@ Influenced by:
   - Opponent defensive level
   - In-game event attempts
 
-Performance affects the amount of skill points granted, which alters future probability calculations
 
 ## Future Improvements
-  - Full Premier League integration
   - Multi-season simulation
   - Club transfers
-  - Expanded stat tracking
