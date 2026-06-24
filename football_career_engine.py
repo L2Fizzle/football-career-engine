@@ -203,7 +203,6 @@ def career(teams):
 def main():
 
     full_teams = get_league_data("PL_teams.txt")
-    print(len(full_teams))
 
     career(full_teams)
 
