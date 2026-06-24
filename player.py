@@ -8,6 +8,7 @@ POSITIONS_LIST = [
     "LWB", "RWB",
     "LB", "RB",
     "CB"]
+
 class Player:
 
     def __init__(self,name):
@@ -16,6 +17,8 @@ class Player:
         self.position = ""
 
         self.age = 0
+        self.career_length = 0
+
         self.pace = 0
         self.shooting = 0
         self.passing = 0
@@ -33,6 +36,7 @@ class Player:
         self.season_goals = 0
         self.season_assists = 0
         self.season_dribbles = 0
+        self.season_rating = 0
 
         self.career_goals = 0
         self.career_assists = 0
@@ -44,6 +48,8 @@ class Player:
         self.position = random.choice(POSITIONS_LIST)
 
         self.age = random.randint(15,20)
+        self.career_length = random.randint(10,25)
+
         self.pace = random.randint(1,10)
         self.shooting = random.randint(1,10)
         self.passing = random.randint(1,10)
@@ -58,6 +64,9 @@ class Player:
 
     def display_age(self):
         return self.age
+
+    def display_career_length(self):
+        return self.career_length
 
     def display_position(self):
         return self.position
@@ -108,6 +117,9 @@ class Player:
     def display_career_assists(self):
         return self.career_assists
 
+    def increase_age(self):
+        self.age += 1
+
     def clear_match_stats(self):
         self.match_goals = 0
         self.match_assists = 0
@@ -116,6 +128,8 @@ class Player:
     def clear_player_rating(self):
         self.match_rating = 6.0
 
+    def clear_season_rating(self):
+        self.season_rating = 6.0
 
     def shot_attempt(self,opponent_defense):
         goal_chance = self.shooting - (opponent_defense/2)
@@ -125,6 +139,7 @@ class Player:
         if goal_chance >= odds_of_scoring:
             self.match_goals += 1
             self.season_goals += 1
+            self.career_goals += 1
 
     def key_pass(self, opponent_defense):
         assist_chance = round(self.passing - (opponent_defense / 2))
@@ -134,6 +149,7 @@ class Player:
         if assist_chance >= odds_of_assisting:
             self.match_assists += 1
             self.season_assists += 1
+            self.career_assists += 1
 
     def dribble_attempt(self, opponent_defense):
         dribble_chance = self.dribbling - (opponent_defense / 2)
@@ -150,8 +166,18 @@ class Player:
         self.match_rating += self.match_dribbles * 0.3
         if self.match_rating > 10:
             self.match_rating = 10.0
+        self.season_rating += self.match_rating
+        self.career_rating += self.match_rating
 
         return self.match_rating
+
+    def calculate_season_rating(self):
+        self.season_rating = round(self.season_rating/38,2)
+
+    def calculate_career_rating(self):
+        average_career_rating = self.career_rating/(38*self.career_length)
+        return average_career_rating
+
 
 
 
