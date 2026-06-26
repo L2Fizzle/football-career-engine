@@ -31,6 +31,8 @@ class Player:
         self.match_goals = 0
         self.match_assists = 0
         self.match_dribbles = 0
+        self.match_passes = 0
+        self.match_pass_accuracy = 0
         self.match_rating = 6.0
 
         self.season_goals = 0
@@ -48,7 +50,7 @@ class Player:
         self.position = random.choice(POSITIONS_LIST)
 
         self.age = random.randint(15,20)
-        self.career_length = random.randint(10,25)
+        self.career_length = random.randint(15,25)
 
         self.pace = random.randint(1,10)
         self.shooting = random.randint(1,10)
@@ -124,6 +126,8 @@ class Player:
         self.match_goals = 0
         self.match_assists = 0
         self.match_dribbles = 0
+        self.match_passes = 0
+        self.match_pass_accuracy = 0
 
     def clear_player_rating(self):
         self.match_rating = 6.0
@@ -151,6 +155,42 @@ class Player:
             self.season_assists += 1
             self.career_assists += 1
 
+    def calculate_passes(self):
+        if self.position in  ["ST", "CF", "LW", "RW"]:
+            if self.passing <= 5:
+                pass_attempts = random.randint(10,24)
+            elif self.passing <= 7:
+                pass_attempts = random.randint(25,49)
+            else:
+                pass_attempts = random.randint(50,70)
+
+        elif self.position in  ["LM", "RM", "CAM", "CM", "CDM"]:
+            if self.passing <= 5:
+                pass_attempts = random.randint(25,44)
+            elif self.passing <= 7:
+                pass_attempts = random.randint(45,79)
+            else:
+                pass_attempts = random.randint(80,110)
+
+        else:
+            if self.passing <= 5:
+                pass_attempts = random.randint(20,44)
+            elif self.passing <= 7:
+                pass_attempts = random.randint(45,74)
+            else:
+                pass_attempts = random.randint(75,130)
+
+        if self.passing <= 5:
+            accuracy = round(random.uniform(0.3,0.6),2)
+
+        elif self.passing <= 7:
+            accuracy = round(random.uniform(0.55,0.75),2)
+
+        else:
+            accuracy = round(random.uniform(0.7,0.95),2)
+
+        self.match_passes = round(pass_attempts*accuracy)
+        self.match_pass_accuracy = accuracy
     def dribble_attempt(self, opponent_defense):
         dribble_chance = self.dribbling - (opponent_defense / 2)
 
@@ -163,7 +203,11 @@ class Player:
     def calculate_match_rating(self):
         self.match_rating += self.match_goals
         self.match_rating += self.match_assists * 0.7
-        self.match_rating += self.match_dribbles * 0.3
+        self.match_rating += self.match_dribbles * 0.4
+        self.match_rating += self.match_passes * 0.01
+        self.match_rating += (self.match_pass_accuracy - 0.75)
+
+
         if self.match_rating > 10:
             self.match_rating = 10.0
         self.season_rating += self.match_rating

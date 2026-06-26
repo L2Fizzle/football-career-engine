@@ -78,14 +78,6 @@ def matchday_team(teams, teams_played):
     teams.remove(team)
     teams_played.append(team)
     return team
-'''
-def opponent_shot_attempt(user_defense, opponent_attack, opponent_reputation):
-    goal_chance = opponent_attack - (user_defense/2)
-
-    odds_of_scoring = random.randint(round(10-(opponent_attack/2)),10)
-        if goal_chance >= odds_of_scoring:
-            break
-'''
 
 def attack_chance(team_goals, team_attack, team_reputation,opponent_defense, opponent_reputation):
     goal_chance = team_attack - (opponent_defense / 2)
@@ -97,10 +89,20 @@ def attack_chance(team_goals, team_attack, team_reputation,opponent_defense, opp
 
     return team_goals
 
+def display_player_match(player):
+    print(f"{player.name} match stats:")
+    print(f"{player.match_goals} Goals,  {player.match_assists} Assists,  "
+          f"{player.match_dribbles} successful dribbles")
+    print(f"{player.match_passes} passes completed with {player.match_pass_accuracy:.0%} accuracy")
+
+    player_rating = player.calculate_match_rating()
+    print(f"Final match rating: {player_rating:.1f}")
+
+    player.clear_match_stats()
+    player.clear_player_rating()
 
 def match(player, team_name, team_attack, team_defense, team_reputation, opponent_name, opponent_attack, opponent_defense, opponent_reputation):
-    print("\n", "⚽"*20)
-    print(f"\nOpponent: {opponent_name}")
+
 
     team_goals = 0
     opponent_goals = 0
@@ -126,24 +128,31 @@ def match(player, team_name, team_attack, team_defense, team_reputation, opponen
     for dribble in range(dribble_attempts):
         player.dribble_attempt(opponent_defense)
 
+    player.calculate_passes()
+
     player.match_assists = min(player.match_assists, team_goals) #reduces over inflating of goals and allows more realistic match simulations
 
     total_team_goals = team_goals + player.match_goals
 
     print(f"Score: {team_name}  {total_team_goals} - {opponent_goals}  {opponent_name}")
 
+    display_player_match(player)
 
-    print(f"{player.name} scored {player.match_goals} goals")
+    if total_team_goals > opponent_goals:
+        points_gained = match_result_points("W")
+    elif total_team_goals == opponent_goals:
+        points_gained = match_result_points("D")
+    else:
+        points_gained = match_result_points("L")
+    return points_gained
 
-    print(f"{player.name} assisted {player.match_assists} goals")
-
-    print(f"{player.name} made {player.match_dribbles} successful dribbles")
-
-    player_rating = player.calculate_match_rating()
-    print(f"\nFinal match rating: {player_rating}")
-
-    player.clear_match_stats()
-    player.clear_player_rating()
+def match_result_points(result):
+    if result == "W":
+        return 3
+    elif result == "D":
+        return 1
+    else:
+        return 0
 
 def simulate_season(full_teams,player,user_team):
     teams_played_once = []
@@ -153,17 +162,27 @@ def simulate_season(full_teams,player,user_team):
 
     check_ready()
     matchday = 1
+    team_points = 0
     while full_teams:
         opponent = matchday_team(full_teams, teams_played_once)
         opponent_name, opponent_attack, opponent_defense, opponent_reputation = (opponent["name"],
                                                                                  opponent["attack"],
                                                                                  opponent["defense"],
                                                                                  opponent["reputation"])
-        print(f"Matchday {matchday}")
-        match(player, team_name, team_attack, team_defence, team_reputation,
+
+        print("⚽" * 20)
+        print(f"\nMatchday {matchday}")
+        print(f"\nOpponent: {opponent_name}")
+        match_and_points = match(player, team_name, team_attack, team_defence, team_reputation,
               opponent_name, opponent_attack, opponent_defense, opponent_reputation)
-        time.sleep(3)
+        if match_and_points == 1:
+            print(f" 1 point earned by {team_name}")
+        else:
+            print(f"{match_and_points} points earned by {team_name}")
+        team_points += match_and_points
+        time.sleep(1)
         matchday += 1
+        print()
 
     while teams_played_once:
         opponent = matchday_team(teams_played_once, teams_played_twice)
@@ -171,11 +190,19 @@ def simulate_season(full_teams,player,user_team):
                                                                                  opponent["attack"],
                                                                                  opponent["defense"],
                                                                                  opponent["reputation"])
-        print(f"Matchday {matchday}")
-        match(player, team_name, team_attack, team_defence, team_reputation,
-              opponent_name, opponent_attack, opponent_defense, opponent_reputation)
-        time.sleep(3)
+        print("⚽" * 20)
+        print(f"\nMatchday {matchday}")
+        print(f"\nOpponent: {opponent_name}")
+        match_and_points = match(player, team_name, team_attack, team_defence, team_reputation,
+                                 opponent_name, opponent_attack, opponent_defense, opponent_reputation)
+        if match_and_points == 1:
+            print(f" 1 point earned by {team_name}")
+        else:
+            print(f"{match_and_points} points earned by {team_name}")
+        team_points += match_and_points
+        time.sleep(1)
         matchday += 1
+        print()
 
     print("*"*30)
     print("-"*9, "SEASON STATS", "-"*9)
@@ -186,7 +213,8 @@ def simulate_season(full_teams,player,user_team):
 
     player.calculate_season_rating()
 
-    print(f"Season Rating: {player.season_rating}")
+    print(f"Season Rating: {player.season_rating:.1f}")
+    print(f"{team_name} finishes with {team_points} points")
 
 def career(teams):
 
