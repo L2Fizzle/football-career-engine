@@ -107,7 +107,7 @@ def match(player, team_name, team_attack, team_defense, team_reputation, opponen
     team_goals = 0
     opponent_goals = 0
 
-    user_shot_attempts = random.randint(0,int(player.shooting/2))
+    user_shot_attempts = random.randint(0,int(team_attack/2)) #makes shooting opportunities based on team's attacking threat
     user_key_pass_attempts = random.randint(0,int(player.playmaking_ability/2))
     dribble_attempts = random.randint(0,int(player.dribbling/2))
 
@@ -176,11 +176,10 @@ def simulate_season(full_teams,player,user_team):
         match_and_points = match(player, team_name, team_attack, team_defence, team_reputation,
               opponent_name, opponent_attack, opponent_defense, opponent_reputation)
         if match_and_points == 1:
-            print(f" 1 point earned by {team_name}")
+            print(f"1 point earned by {team_name}")
         else:
             print(f"{match_and_points} points earned by {team_name}")
         team_points += match_and_points
-        time.sleep(1)
         matchday += 1
         print()
 
@@ -200,12 +199,12 @@ def simulate_season(full_teams,player,user_team):
         else:
             print(f"{match_and_points} points earned by {team_name}")
         team_points += match_and_points
-        time.sleep(1)
+
         matchday += 1
         print()
 
     print("*"*30)
-    print("-"*9, "SEASON STATS", "-"*9)
+    print("-"*8, "SEASON STATS", "-"*8)
     print("*"*30)
     print()
     print(f"Season Goals: {player.season_goals}")
