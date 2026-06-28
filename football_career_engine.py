@@ -143,6 +143,7 @@ def match(player, team_name, team_attack, team_defense, opponent_name, opponent_
 
     player.match_assists = min(player.match_assists, team_goals) #reduces over inflating of goals and allows more realistic match simulations
 
+    player.update_assists()
     total_team_goals = team_goals + player.match_goals
 
     print(f"Score: {team_name}  {total_team_goals} - {opponent_goals}  {opponent_name}")

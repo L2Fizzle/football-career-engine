@@ -152,8 +152,10 @@ class Player:
 
         if assist_chance >= odds_of_assisting:
             self.match_assists += 1
-            self.season_assists += 1
-            self.career_assists += 1
+
+    def update_assists(self):
+        self.season_assists += self.match_assists
+        self.career_assists += self.match_assists
 
     def calculate_passes(self):
         if self.position in  ["ST", "CF", "LW", "RW"]:
