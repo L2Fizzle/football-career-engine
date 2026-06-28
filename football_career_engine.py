@@ -61,7 +61,8 @@ def get_league_data(filename):
             team = {"name":parts[0],
                     "attack":float(parts[1]),
                     "defense":float(parts[2]),
-                    "reputation":float(parts[3])}
+                    "reputation":float(parts[3]),
+                    "consistency":float(parts[4])}
             teams.append(team)
     return teams
 
@@ -79,7 +80,17 @@ def matchday_team(teams, teams_played):
     teams_played.append(team)
     return team
 
-def attack_chance(team_goals, team_attack, team_reputation,opponent_defense, opponent_reputation):
+def matchday_rating(team_attack, team_defense, consistency):
+    form = round(random.uniform(-consistency, consistency),1)
+    team_attack += form
+    team_defense += form
+    if team_attack >= 9.9:
+        team_attack = 9.9
+    if team_defense >= 9.9:
+        team_defense = 9.9
+    return team_attack, team_defense
+
+def attack_chance(team_goals, team_attack, opponent_defense):
     goal_chance = team_attack - (opponent_defense / 2)
 
     odds_of_scoring = random.randint(round(10 - team_attack), 10)
@@ -101,7 +112,7 @@ def display_player_match(player):
     player.clear_match_stats()
     player.clear_player_rating()
 
-def match(player, team_name, team_attack, team_defense, team_reputation, opponent_name, opponent_attack, opponent_defense, opponent_reputation):
+def match(player, team_name, team_attack, team_defense, opponent_name, opponent_attack, opponent_defense):
 
 
     team_goals = 0
@@ -113,11 +124,11 @@ def match(player, team_name, team_attack, team_defense, team_reputation, opponen
 
     team_chances = random.randint(round(team_attack/2),round(team_attack)) #team chances (excluding user chances)
     for chance in range(team_chances):
-        team_goals = attack_chance(team_goals, team_attack,team_reputation, opponent_defense, opponent_reputation)
+        team_goals = attack_chance(team_goals, team_attack,opponent_defense)
 
     opponent_chances = random.randint(round(opponent_attack/2),round(opponent_attack)) #opponent chances
     for chance in range(opponent_chances):
-        opponent_goals = attack_chance(opponent_goals, opponent_attack,opponent_reputation, team_defense, team_reputation)
+        opponent_goals = attack_chance(opponent_goals, opponent_attack, team_defense)
 
     for shot in range(user_shot_attempts):
         player.shot_attempt(opponent_defense)
@@ -157,24 +168,27 @@ def match_result_points(result):
 def simulate_season(full_teams,player,user_team):
     teams_played_once = []
     teams_played_twice = []
-    team_name, team_attack, team_defence, team_reputation = (user_team["name"], user_team["attack"],
-                                                             user_team["defense"], user_team["reputation"])
+    team_name, team_attack, team_defense, team_reputation, team_consistency = (user_team["name"], user_team["attack"],
+                                                             user_team["defense"], user_team["reputation"], user_team["consistency"])
 
     check_ready()
     matchday = 1
     team_points = 0
     while full_teams:
         opponent = matchday_team(full_teams, teams_played_once)
-        opponent_name, opponent_attack, opponent_defense, opponent_reputation = (opponent["name"],
-                                                                                 opponent["attack"],
-                                                                                 opponent["defense"],
-                                                                                 opponent["reputation"])
+        opponent_name, opponent_attack, opponent_defense, opponent_reputation, opponent_consistency = (opponent["name"],
+                                                                                                       opponent["attack"],
+                                                                                                       opponent["defense"],
+                                                                                                       opponent["reputation"],
+                                                                                                       opponent["consistency"])
+        opponent_attack, opponent_defense = matchday_rating(opponent_attack, opponent_defense, opponent_consistency)
+        team_attack, team_defense = matchday_rating(team_attack, team_defense, team_consistency)
 
         print("⚽" * 20)
         print(f"\nMatchday {matchday}")
         print(f"\nOpponent: {opponent_name}")
-        match_and_points = match(player, team_name, team_attack, team_defence, team_reputation,
-              opponent_name, opponent_attack, opponent_defense, opponent_reputation)
+        match_and_points = match(player, team_name, team_attack, team_defense,
+              opponent_name, opponent_attack, opponent_defense)
         if match_and_points == 1:
             print(f"1 point earned by {team_name}")
         else:
@@ -182,18 +196,23 @@ def simulate_season(full_teams,player,user_team):
         team_points += match_and_points
         matchday += 1
         print()
+        team_attack, team_defense = user_team["attack"], user_team["defense"]
 
     while teams_played_once:
         opponent = matchday_team(teams_played_once, teams_played_twice)
-        opponent_name, opponent_attack, opponent_defense, opponent_reputation = (opponent["name"],
+        opponent_name, opponent_attack, opponent_defense, opponent_reputation, opponent_consistency = (opponent["name"],
                                                                                  opponent["attack"],
                                                                                  opponent["defense"],
-                                                                                 opponent["reputation"])
+                                                                                 opponent["reputation"],
+                                                                                 opponent["consistency"])
+        opponent_attack, opponent_defense = matchday_rating(opponent_attack, opponent_defense, opponent_consistency)
+        team_attack, team_defense = matchday_rating(team_attack, team_defense, team_consistency)
+
         print("⚽" * 20)
         print(f"\nMatchday {matchday}")
         print(f"\nOpponent: {opponent_name}")
-        match_and_points = match(player, team_name, team_attack, team_defence, team_reputation,
-                                 opponent_name, opponent_attack, opponent_defense, opponent_reputation)
+        match_and_points = match(player, team_name, team_attack, team_defense,
+                                 opponent_name, opponent_attack, opponent_defense)
         if match_and_points == 1:
             print(f" 1 point earned by {team_name}")
         else:
@@ -202,6 +221,8 @@ def simulate_season(full_teams,player,user_team):
 
         matchday += 1
         print()
+        team_attack, team_defense = user_team["attack"], user_team["defense"]
+
 
     print("*"*30)
     print("-"*8, "SEASON STATS", "-"*8)
