@@ -146,7 +146,7 @@ def match(player, team_name, team_attack, team_defense, opponent_name, opponent_
     player.update_assists()
     total_team_goals = team_goals + player.match_goals
 
-    print(f"Score: {team_name}  {total_team_goals} - {opponent_goals}  {opponent_name}")
+    print(f"\nScore: {team_name}  {total_team_goals} - {opponent_goals}  {opponent_name}\n")
 
     display_player_match(player)
 
@@ -166,7 +166,22 @@ def match_result_points(result):
     else:
         return 0
 
+def simulation_speed():
+    while True:
+        sim_type = input("\nWould you like a quick sim or slow sim for this season? (type q for quick and s for slow): ")
+        if sim_type.lower() == "q":
+            sim_speed = 0
+            return sim_speed
+        elif sim_type.lower() == "s":
+            sim_speed = 5
+            return sim_speed
+        else:
+            print("Please type either q or s")
+
 def simulate_season(full_teams,player,user_team):
+
+    sim_speed = simulation_speed()
+
     teams_played_once = []
     teams_played_twice = []
     team_name, team_attack, team_defense, team_reputation, team_consistency = (user_team["name"], user_team["attack"],
@@ -175,6 +190,9 @@ def simulate_season(full_teams,player,user_team):
     check_ready()
     matchday = 1
     team_points = 0
+    team_wins = 0
+    team_draws = 0
+    team_losses = 0
     while full_teams:
         opponent = matchday_team(full_teams, teams_played_once)
         opponent_name, opponent_attack, opponent_defense, opponent_reputation, opponent_consistency = (opponent["name"],
@@ -190,14 +208,20 @@ def simulate_season(full_teams,player,user_team):
         print(f"\nOpponent: {opponent_name}")
         match_and_points = match(player, team_name, team_attack, team_defense,
               opponent_name, opponent_attack, opponent_defense)
-        if match_and_points == 1:
+        if match_and_points == 3:
+            print(f"3 points earned by {team_name}")
+            team_wins += 1
+        elif match_and_points == 1:
             print(f"1 point earned by {team_name}")
+            team_draws += 1
         else:
-            print(f"{match_and_points} points earned by {team_name}")
+            print(f"0 points earned by {team_name}")
+            team_losses += 1
         team_points += match_and_points
         matchday += 1
         print()
         team_attack, team_defense = user_team["attack"], user_team["defense"]
+        time.sleep(sim_speed)
 
     while teams_played_once:
         opponent = matchday_team(teams_played_once, teams_played_twice)
@@ -214,28 +238,38 @@ def simulate_season(full_teams,player,user_team):
         print(f"\nOpponent: {opponent_name}")
         match_and_points = match(player, team_name, team_attack, team_defense,
                                  opponent_name, opponent_attack, opponent_defense)
-        if match_and_points == 1:
-            print(f" 1 point earned by {team_name}")
+        if match_and_points == 3:
+            print(f"3 points earned by {team_name}")
+            team_wins += 1
+        elif match_and_points == 1:
+            print(f"1 point earned by {team_name}")
+            team_draws += 1
         else:
-            print(f"{match_and_points} points earned by {team_name}")
+            print(f"0 points earned by {team_name}")
+            team_losses += 1
+
         team_points += match_and_points
 
         matchday += 1
         print()
         team_attack, team_defense = user_team["attack"], user_team["defense"]
+        time.sleep(sim_speed)
 
 
-    print("*"*30)
-    print("-"*8, "SEASON STATS", "-"*8)
-    print("*"*30)
+    print("⚽"*26)
+    print("🦁"*8, "END OF SEASON STATS", "🦁"*8)
+    print("⚽"*26)
     print()
+
+    print(f"{player.name}")
     print(f"Season Goals: {player.season_goals}")
     print(f"Season Assists: {player.season_assists}")
 
     player.calculate_season_rating()
 
-    print(f"Season Rating: {player.season_rating:.1f}")
-    print(f"{team_name} finishes with {team_points} points")
+    print(f"Average Rating: {player.season_rating:.1f}")
+    print(f"{team_name} Record: {team_wins}W {team_draws}D {team_losses}L")
+    print(f"{team_name} finishes the season with {team_points} points")
 
 def career(teams):
 
