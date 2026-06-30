@@ -4,15 +4,15 @@
 
 ## Features
   - Simulated individual match performance based on opponent strength
-  - Probability-driven outcomes for shot attempts, key passes, and dribble attempts
-  - Dynamic skill progression system (shooting, passing, dribbling, and more in the future)
-  - Team stat data derived from real-world performance
+  - Probability-driven match and season outcomes for individual goals, assists, dribble attempts, passes, and team statistics
+  - Premier league team data derived from real-world performance
 
 ## How it works (Currently)
 Match outcomes are determined through weighted probability calculations
 Influenced by:
   - Player attributes
-  - Opponent defensive level
+  - Opponent ratings
+  - form and luck
   - In-game event attempts
 
 
