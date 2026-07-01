@@ -160,27 +160,27 @@ class Player:
     def calculate_passes(self):
         if self.position in  ["ST", "CF", "LW", "RW"]:
             if self.passing <= 5:
-                pass_attempts = random.randint(10,24)
+                pass_attempts = random.randint(8,18)
             elif self.passing <= 7:
-                pass_attempts = random.randint(25,49)
+                pass_attempts = random.randint(15,27)
             else:
-                pass_attempts = random.randint(50,70)
+                pass_attempts = random.randint(25,40)
 
         elif self.position in  ["LM", "RM", "CAM", "CM", "CDM"]:
             if self.passing <= 5:
-                pass_attempts = random.randint(25,44)
+                pass_attempts = random.randint(15,30)
             elif self.passing <= 7:
-                pass_attempts = random.randint(45,79)
+                pass_attempts = random.randint(28,50)
             else:
-                pass_attempts = random.randint(80,110)
+                pass_attempts = random.randint(45,70)
 
         else:
             if self.passing <= 5:
-                pass_attempts = random.randint(20,44)
+                pass_attempts = random.randint(20,34)
             elif self.passing <= 7:
-                pass_attempts = random.randint(45,74)
+                pass_attempts = random.randint(30,54)
             else:
-                pass_attempts = random.randint(75,130)
+                pass_attempts = random.randint(50,80)
 
         if self.passing <= 5:
             accuracy = round(random.uniform(0.3,0.6),2)
@@ -206,7 +206,7 @@ class Player:
         self.match_rating += self.match_goals
         self.match_rating += self.match_assists * 0.7
         self.match_rating += self.match_dribbles * 0.4
-        self.match_rating += self.match_passes * 0.01
+        self.match_rating += self.match_passes * 0.02
         self.match_rating += (self.match_pass_accuracy - 0.75)
 
 

@@ -10,7 +10,7 @@ def points_calculation(min_points, max_points):
     :return:
     '''
     team_points = random.randint(int(min_points),int(max_points))
-    goal_difference = round(team_points*0.9 - 40)
+    goal_difference = round(team_points*0.9 - 50)
     team_goal_difference = goal_difference + random.randint(-15,10)
     return team_points,team_goal_difference
 
