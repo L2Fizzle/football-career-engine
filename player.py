@@ -21,6 +21,7 @@ class Player:
 
         self.pace = 0
         self.shooting = 0
+        self.chance_per_shot = 0
         self.passing = 0
         self.dribbling = 0
         self.defending = 0
@@ -59,6 +60,8 @@ class Player:
         self.strength = random.randint(1,10)
         self.iq = random.randint(1,10)
         self.playmaking_ability = round((self.passing + self.iq)/2)
+
+        self.chance_per_shot = self.shooting * 0.03
 
     def display_name(self):
         return self.name
@@ -132,11 +135,14 @@ class Player:
         self.season_rating = 6.0
 
     def shot_attempt(self,opponent_defense):
-        goal_chance = self.shooting - (opponent_defense/2)
+        chance = self.chance_per_shot
+        chance -= (opponent_defense - 5) * 0.025 # allows opponent's defence level to affect how great the chance is
 
-        odds_of_scoring = random.randint(10-self.shooting,10)
+        #balances chance
+        chance = max(0.02,chance)
+        chance = min(0.45,chance)
 
-        if goal_chance >= odds_of_scoring:
+        if chance >= random.random():
             self.match_goals += 1
             self.season_goals += 1
             self.career_goals += 1

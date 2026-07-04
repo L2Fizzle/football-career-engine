@@ -1,9 +1,9 @@
 Team_name,attack_rating,defense_rating,consistency,points_min,points_max
 Arsenal,8.6,9.2,0.7,72,89
 Manchester City,9.0,8.3,1.0,71,98
-Manchester United,8.6,7.5,1.8,55,90
+Manchester United,8.6,7.5,1.6,55,90
 Aston Villa,8.2,7.7,1.3,55,80
-Liverpool,8.3,7.3,1.8,67,92
+Liverpool,8.3,7.3,1.6,67,92
 Bournemouth,7.6,7.0,1.3,40,70
 Sunderland,6.8,7.8,1.7,35,65
 Brighton & Hove Albion,7.0,7.0,1.4,45,70

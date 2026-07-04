@@ -10,8 +10,13 @@ def points_calculation(min_points, max_points):
     :return:
     '''
     team_points = random.randint(int(min_points),int(max_points))
-    goal_difference = round(team_points*0.9 - 50)
-    team_goal_difference = goal_difference + random.randint(-15,10)
+    #two statements allows for more realistic goal difference calculations based on team position
+    if team_points <= 70:
+        goal_difference = round(team_points*0.9 - 50)
+        team_goal_difference = goal_difference + random.randint(-10,10)
+    else:
+        goal_difference = round(team_points * 0.9 - 35)
+        team_goal_difference = goal_difference + random.randint(-10, 10)
     return team_points,team_goal_difference
 
 def prem_table(unsorted_table):

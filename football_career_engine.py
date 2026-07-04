@@ -27,7 +27,7 @@ def enter_information(team_name):
 
 
 def choose_user_team(teams):
-    user_team = random.choice(teams)
+    user_team = teams[1]
 
     return user_team
 
@@ -94,9 +94,20 @@ def matchday_rating(team_attack, team_defense, consistency):
     return team_attack, team_defense
 
 def attack_chance(team_goals, team_attack, opponent_defense):
-    goal_chance = team_attack - (opponent_defense / 2)
+    if team_goals <= 3:
+        goal_chance = team_attack - (opponent_defense / 2)
 
-    odds_of_scoring = random.randint(round(10 - team_attack), 10)
+        odds_of_scoring = random.randint(round(10 - team_attack), 10)
+
+    elif team_goals <= 5:
+        goal_chance = (team_attack - opponent_defense/1.3)
+
+        odds_of_scoring = random.randint(round((10 - team_attack/1.75)),10)
+    else:
+        goal_chance = (team_attack - opponent_defense/1.1)
+
+        odds_of_scoring = random.randint(round((10 - team_attack / 2)), 10)
+
 
     if goal_chance >= odds_of_scoring:
         team_goals += 1
@@ -114,6 +125,24 @@ def display_player_match(player):
 
     player.clear_match_stats()
 
+def generate_events(user_shots, team_chances):
+    '''
+    generates a list of events to allow for a different number of team and user goals every game
+    :param user_shots: the number of shots taken by the user
+    :param team_chances: the number of chances for the team
+    :return: events: randomized list of the order of events
+    '''
+
+    events = []
+
+    for index in range(team_chances):
+        events.append("Team")
+    for index in range(user_shots):
+        events.append("Player")
+
+    random.shuffle(events)
+    return events
+
 def match(player, team_name, team_attack, team_defense, opponent_name, opponent_attack, opponent_defense):
 
 
@@ -124,16 +153,19 @@ def match(player, team_name, team_attack, team_defense, opponent_name, opponent_
     user_key_pass_attempts = random.randint(0,int(player.playmaking_ability/2))
     dribble_attempts = random.randint(0,int(player.dribbling/2))
 
-    team_chances = random.randint(round(team_attack/2),round(team_attack)) #team chances (excluding user chances)
-    for chance in range(team_chances):
-        team_goals = attack_chance(team_goals, team_attack,opponent_defense)
+    team_chances = random.randint(round(team_attack/2.5),round(team_attack/1.5)) #team chances (excluding user chances)
 
-    opponent_chances = random.randint(round(opponent_attack/2),round(opponent_attack)) #opponent chances
-    for chance in range(opponent_chances):
-        opponent_goals = attack_chance(opponent_goals, opponent_attack, team_defense)
+    events = generate_events(user_shot_attempts, team_chances)
 
-    for shot in range(user_shot_attempts):
-        player.shot_attempt(opponent_defense)
+    for chance in range(len(events)):
+        if events[chance] == "Team":
+            team_goals = attack_chance(team_goals, team_attack, opponent_defense)
+        else:
+            player_goals = player.match_goals
+            player.shot_attempt(opponent_defense)
+            if player_goals < player.match_goals:
+                team_goals += 1
+
 
     for ball in range(user_key_pass_attempts):
         player.key_pass(opponent_defense)
@@ -141,34 +173,32 @@ def match(player, team_name, team_attack, team_defense, opponent_name, opponent_
     for dribble in range(dribble_attempts):
         player.dribble_attempt(opponent_defense)
 
+
+    opponent_chances = random.randint(round(opponent_attack/2.5),round(opponent_attack/1.5)) #opponent chances
+
+    for chance in range(opponent_chances):
+        opponent_goals = attack_chance(opponent_goals, opponent_attack, team_defense)
+
+
     player.calculate_passes()
 
     player.match_assists = min(player.match_assists, team_goals) #reduces over inflating of goals and allows more realistic match simulations
 
     player.update_assists()
-    total_team_goals = team_goals + player.match_goals
 
-    print(f"\nScore: {team_name}  {total_team_goals} - {opponent_goals}  {opponent_name}\n")
+    print(f"\nScore: {team_name}  {team_goals} - {opponent_goals}  {opponent_name}\n")
 
-    goal_difference = total_team_goals - opponent_goals
+    goal_difference = team_goals - opponent_goals
 
     display_player_match(player)
 
-    if total_team_goals > opponent_goals:
-        points_gained = match_result_points("W")
-    elif total_team_goals == opponent_goals:
-        points_gained = match_result_points("D")
+    if team_goals > opponent_goals:
+        points_gained = 3
+    elif team_goals == opponent_goals:
+        points_gained = 1
     else:
-        points_gained = match_result_points("L")
+        points_gained = 0
     return points_gained,goal_difference
-
-def match_result_points(result):
-    if result == "W":
-        return 3
-    elif result == "D":
-        return 1
-    else:
-        return 0
 
 def simulation_speed():
     while True:
