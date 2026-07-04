@@ -23,9 +23,9 @@ def prem_table(unsorted_table):
     unsorted_table.sort(key=lambda team: (team["points"], team["goal_difference"]), reverse=True)
 
 def display_table(table):
-    print(f"{"Position":<8} {"Team Name":<25}  {"Points":>6}{"GD":>6}")
+    print(f"{"Position":<15} {"Team Name":<25}  {"Points":>8}{"GD":>10}")
     for position in range(0,20):
         actual_position = position + 1
-        print(f"{actual_position:<8}", f"{str(table[position]["name"]):<25}{str(table[position]["points"]):>6}{str(table[position]["goal_difference"]):>8}")
+        print(f"{actual_position:<15}", f"{str(table[position]["name"]):<25}{str(table[position]["points"]):>8}{str(table[position]["goal_difference"]):>12}")
 
 

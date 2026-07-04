@@ -37,7 +37,6 @@ class Player:
 
         self.season_goals = 0
         self.season_assists = 0
-        self.season_dribbles = 0
         self.season_rating = 0
 
         self.career_goals = 0
@@ -101,9 +100,6 @@ class Player:
     def display_season_assists(self):
         return self.season_assists
 
-    def display_season_dribbles(self):
-        return self.season_dribbles
-
     def display_match_goals(self):
         return self.match_goals
 
@@ -128,11 +124,11 @@ class Player:
         self.match_dribbles = 0
         self.match_passes = 0
         self.match_pass_accuracy = 0
-
-    def clear_player_rating(self):
         self.match_rating = 6.0
 
-    def clear_season_rating(self):
+    def clear_season_stats(self):
+        self.season_goals = 0
+        self.season_assists = 0
         self.season_rating = 6.0
 
     def shot_attempt(self,opponent_defense):
@@ -200,7 +196,6 @@ class Player:
 
         if dribble_chance >= successful_dribble_odds:
             self.match_dribbles += 1
-            self.season_dribbles += 1
 
     def calculate_match_rating(self):
         self.match_rating += self.match_goals

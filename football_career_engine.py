@@ -48,11 +48,17 @@ def show_stats(player,team_name):
     time.sleep(2)
 
     for attribute, value in attributes:
-        print(f"{attribute}: ",end="")
-        time.sleep(1)
-        print(f"{value}")
-        time.sleep(1)
 
+        if attribute != "Career Length":
+            print(f"{attribute}: ", end="")
+            time.sleep(1)
+            print(f"{value}")
+            time.sleep(1)
+        else:
+            print(f"{attribute}: ",end="")
+            time.sleep(1)
+            print(f"{value} years")
+            time.sleep(1)
 
 def get_league_data(filename):
     teams = []
@@ -70,13 +76,6 @@ def get_league_data(filename):
             teams.append(team)
     return teams
 
-def check_ready():
-    while True:
-        begin_message = input("\nAre you ready to begin the season (y/n)?: ")
-        if begin_message.lower() == "y":
-            return
-        else:
-            print("Whenever you're ready!")
 
 def matchday_team(teams, teams_played):
     team = random.choice(teams)
@@ -114,7 +113,6 @@ def display_player_match(player):
     print(f"Final match rating: {player_rating:.1f}")
 
     player.clear_match_stats()
-    player.clear_player_rating()
 
 def match(player, team_name, team_attack, team_defense, opponent_name, opponent_attack, opponent_defense):
 
@@ -191,13 +189,14 @@ def season_table(teams, user_team,user_team_points,user_team_gd):
         max_points = prem_team["max_points"]
         team_points, team_goal_difference = points_calculation(min_points,max_points)
         teams_and_points.append({"name": prem_team["name"], "points": team_points, "goal_difference": team_goal_difference})
-    teams_and_points.append({"name": user_team["name"], "points": user_team_points, "goal_difference": user_team_gd})
+    teams_and_points.append({"name": f"{user_team["name"]}", "points": user_team_points, "goal_difference": user_team_gd})
 
     prem_table(teams_and_points)
     return teams_and_points
 
 def simulate_season(full_teams,player,user_team):
 
+    all_teams = full_teams.copy()
     sim_speed = simulation_speed()
 
     teams_played_once = []
@@ -205,15 +204,14 @@ def simulate_season(full_teams,player,user_team):
     team_name, team_attack, team_defense, team_consistency = (user_team["name"], user_team["attack"],
                                                              user_team["defense"], user_team["consistency"])
 
-    check_ready()
     matchday = 1
     team_points = 0
     team_gd = 0 #gd = goal difference
     team_wins = 0
     team_draws = 0
     team_losses = 0
-    while full_teams:
-        opponent = matchday_team(full_teams, teams_played_once)
+    while all_teams:
+        opponent = matchday_team(all_teams, teams_played_once)
         opponent_name, opponent_attack, opponent_defense, opponent_consistency = (opponent["name"],
                                                                                                        opponent["attack"],
                                                                                                        opponent["defense"],
@@ -275,25 +273,29 @@ def simulate_season(full_teams,player,user_team):
         time.sleep(sim_speed)
 
 
-    print("⚽"*26)
-    print("🦁"*8, "END OF SEASON STATS", "🦁"*8)
-    print("⚽"*26)
+    print("⚽"*50)
+    print("END OF SEASON STATS".center(100," "))
+    print("⚽"*50)
     print()
 
-    print(f"{player.name}")
-    print(f"Season Goals: {player.season_goals}")
-    print(f"Season Assists: {player.season_assists}")
+    print(f"{player.name}".center(100, " "))
+    print(f"⚽Season Goals: {player.season_goals}⚽".center(100, " "))
+    print(f"🎯Season Assists: {player.season_assists}🎯".center(100, " "))
 
     player.calculate_season_rating()
 
-    print(f"Average Rating: {player.season_rating:.1f}")
-    print(f"{team_name} Record: {team_wins}W {team_draws}D {team_losses}L")
-    print(f"{team_name} finishes the season with {team_points} points")
+    print(f"📋Average Rating: {player.season_rating:.1f}📋".center(100, " "))
+    print(f"{team_name} Record: {team_wins}W {team_draws}D {team_losses}L".center(102, " "))
+    print(f"{team_name} finishes the season with {team_points} points".center(100, " "))
 
-    print("Season Table")
-    print("-"*15)
-    table = season_table(teams_played_twice,user_team,team_points, team_gd)
+    print()
+    print("🦁"*50)
+    print("Season Table".center(100," "))
+    print("🦁"*50)
+    table = season_table(teams_played_twice,user_team,team_points,team_gd)
     display_table(table)
+
+    player.clear_season_stats()
 
 def career(teams):
 
@@ -305,8 +307,20 @@ def career(teams):
 
     prem_teams.remove(user_team)
 
+    for season in range(career_length):
+        print(f"\n🦁Season {season + 1}🦁")
+        simulate_season(prem_teams,player,user_team)
 
-    simulate_season(prem_teams,player,user_team)
+    print()
+    print("⭐"*50)
+    print(f"{player.name} Career Stats: ".center(105, " "))
+    print()
+
+    print(f"{player.career_length*38} appearances".center(104, " "))
+    print(f"⚽Career Goals: {player.career_goals}⚽".center(100, " "))
+    print(f"🎯Season Assists: {player.career_assists}🎯".center(100, " "))
+    print("⭐"*50)
+
 
 def main():
 
