@@ -95,16 +95,16 @@ def matchday_rating(team_attack, team_defense, consistency):
 
 def attack_chance(team_goals, team_attack, opponent_defense):
     if team_goals <= 3:
-        goal_chance = team_attack - (opponent_defense / 2)
+        goal_chance = team_attack - (opponent_defense / 2.5)
 
-        odds_of_scoring = random.randint(round(10 - team_attack), 10)
+        odds_of_scoring = random.randint(round(10 - team_attack/0.8), 10)
 
     elif team_goals <= 5:
-        goal_chance = (team_attack - opponent_defense/1.3)
+        goal_chance = (team_attack - opponent_defense/1.25)
 
-        odds_of_scoring = random.randint(round((10 - team_attack/1.75)),10)
+        odds_of_scoring = random.randint(round((10 - team_attack/1.8)),10)
     else:
-        goal_chance = (team_attack - opponent_defense/1.1)
+        goal_chance = (team_attack - opponent_defense)
 
         odds_of_scoring = random.randint(round((10 - team_attack / 2)), 10)
 
@@ -229,6 +229,7 @@ def match(player, team_name, team_attack, team_defense, opponent_name, opponent_
         points_gained = 1
     else:
         points_gained = 0
+
     return points_gained,goal_difference
 
 def simulation_speed():
