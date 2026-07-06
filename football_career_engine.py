@@ -381,7 +381,9 @@ def career(teams):
 
     print(f"{player.career_length*38} appearances".center(104, " "))
     print(f"⚽Career Goals: {player.career_goals}⚽".center(100, " "))
-    print(f"🎯Season Assists: {player.career_assists}🎯".center(100, " "))
+    print(f"🎯Career Assists: {player.career_assists}🎯".center(100, " "))
+    print(f"💪Career Clean Sheets: {player.career_clean_sheets}💪".center(100, " "))
+
     print("⭐"*50)
 
 
