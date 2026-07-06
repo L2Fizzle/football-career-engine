@@ -27,7 +27,7 @@ def enter_information(team_name):
 
 
 def choose_user_team(teams):
-    user_team = teams[1]
+    user_team = random.choice(teams)
 
     return user_team
 
@@ -115,10 +115,17 @@ def attack_chance(team_goals, team_attack, opponent_defense):
     return team_goals
 
 def display_player_match(player):
+    '''
+    Displays players match results
+    :param player: the users player
+    :return: None: prints results.
+    '''
     print(f"{player.name} match stats:")
     print(f"{player.match_goals} Goals,  {player.match_assists} Assists,  "
           f"{player.match_dribbles} successful dribbles")
     print(f"{player.match_passes} passes completed with {player.match_pass_accuracy:.0%} accuracy")
+    if player.display_position() in ["CDM","LWB", "RWB", "LB", "RB","CB"] and player.clean_sheet == 1:
+        print(f"Clean Sheet")
 
     player_rating = player.calculate_match_rating()
     print(f"Final match rating: {player_rating:.1f}")
@@ -143,8 +150,30 @@ def generate_events(user_shots, team_chances):
     random.shuffle(events)
     return events
 
-def match(player, team_name, team_attack, team_defense, opponent_name, opponent_attack, opponent_defense):
+def check_clean_sheet(player,opponent_goals):
+    '''
+    checks if a clean sheet was earned
+    :param player: users player
+    :param opponent_goals: the amount of goals the opponent scored
+    :return: None: adds clean sheet to the player's results
+    '''
+    if opponent_goals == 0:
+        player.add_clean_sheet()
 
+
+def match(player, team_name, team_attack, team_defense, opponent_name, opponent_attack, opponent_defense):
+    '''
+    Simulates an entire match
+    :param player: the users player
+    :param team_name: name of users team
+    :param team_attack: attack rating of user team
+    :param team_defense: defense rating of user team
+    :param opponent_name: name of opponent team
+    :param opponent_attack: attack rating of opponent
+    :param opponent_defense: defense rating of opponent
+    :return: points gained: number of points gained from the match
+    :return: goal difference: goal difference of the match
+    '''
 
     team_goals = 0
     opponent_goals = 0
@@ -182,13 +211,15 @@ def match(player, team_name, team_attack, team_defense, opponent_name, opponent_
 
     player.calculate_passes()
 
-    player.match_assists = min(player.match_assists, team_goals) #reduces over inflating of goals and allows more realistic match simulations
+    player.match_assists = min(player.match_assists, (team_goals - player.match_goals)) #reduces over inflating of goals and allows more realistic match simulations
 
     player.update_assists()
 
     print(f"\nScore: {team_name}  {team_goals} - {opponent_goals}  {opponent_name}\n")
 
     goal_difference = team_goals - opponent_goals
+
+    check_clean_sheet(player, opponent_goals)
 
     display_player_match(player)
 
@@ -311,6 +342,7 @@ def simulate_season(full_teams,player,user_team):
     print(f"{player.name}".center(100, " "))
     print(f"⚽Season Goals: {player.season_goals}⚽".center(100, " "))
     print(f"🎯Season Assists: {player.season_assists}🎯".center(100, " "))
+    print(f"💪Clean Sheets: {player.season_clean_sheets}💪".center(99," "))
 
     player.calculate_season_rating()
 

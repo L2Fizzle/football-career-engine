@@ -34,14 +34,17 @@ class Player:
         self.match_dribbles = 0
         self.match_passes = 0
         self.match_pass_accuracy = 0
+        self.clean_sheet = 0
         self.match_rating = 6.0
 
         self.season_goals = 0
         self.season_assists = 0
+        self.season_clean_sheets = 0
         self.season_rating = 0
 
         self.career_goals = 0
         self.career_assists = 0
+        self.career_clean_sheets = 0
         self.career_rating = 6.0
 
 
@@ -127,6 +130,7 @@ class Player:
         self.match_dribbles = 0
         self.match_passes = 0
         self.match_pass_accuracy = 0
+        self.clean_sheet = 0
         self.match_rating = 6.0
 
     def clear_season_stats(self):
@@ -203,12 +207,21 @@ class Player:
         if dribble_chance >= successful_dribble_odds:
             self.match_dribbles += 1
 
+    def add_clean_sheet(self):
+        self.clean_sheet += 1
+        self.season_clean_sheets += 1
+        self.career_clean_sheets += 1
+
+
     def calculate_match_rating(self):
         self.match_rating += self.match_goals
         self.match_rating += self.match_assists * 0.7
         self.match_rating += self.match_dribbles * 0.4
         self.match_rating += self.match_passes * 0.02
         self.match_rating += (self.match_pass_accuracy - 0.75)
+
+        if self.position in ["CDM","LWB", "RWB","LB", "RB","CB"]:
+            self.match_rating += self.clean_sheet
 
 
         if self.match_rating > 10:
