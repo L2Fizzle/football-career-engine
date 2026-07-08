@@ -41,6 +41,7 @@ class Player:
         self.season_assists = 0
         self.season_clean_sheets = 0
         self.season_rating = 0
+        self.season_titles = 0
 
         self.career_goals = 0
         self.career_assists = 0
@@ -139,6 +140,7 @@ class Player:
         self.season_assists = 0
         self.season_rating = 6.0
         self.season_clean_sheets = 0
+        self.season_titles = 0
 
     def shot_attempt(self,opponent_defense):
         chance = self.chance_per_shot
@@ -238,6 +240,7 @@ class Player:
 
     def premier_league_winner(self):
         self.prem_titles += 1
+        self.season_titles = 1
 
     def calculate_career_rating(self):
         average_career_rating = self.career_rating/(38*self.career_length)
