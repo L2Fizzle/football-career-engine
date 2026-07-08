@@ -46,6 +46,7 @@ class Player:
         self.career_assists = 0
         self.career_clean_sheets = 0
         self.career_rating = 6.0
+        self.prem_titles = 0
 
 
     def generate_attributes(self):
@@ -234,6 +235,9 @@ class Player:
 
     def calculate_season_rating(self):
         self.season_rating = round(self.season_rating/38,2)
+
+    def premier_league_winner(self):
+        self.prem_titles += 1
 
     def calculate_career_rating(self):
         average_career_rating = self.career_rating/(38*self.career_length)

@@ -27,7 +27,7 @@ def enter_information(team_name):
 
 
 def choose_user_team(teams):
-    user_team = random.choice(teams)
+    user_team = teams[1]
 
     return user_team
 
@@ -356,7 +356,11 @@ def simulate_season(full_teams,player,user_team):
     print("Season Table".center(100," "))
     print("🦁"*50)
     table = season_table(teams_played_twice,user_team,team_points,team_gd)
+    winner = table[0]["name"]
     display_table(table)
+
+    if winner == user_team["name"]:
+        player.premier_league_winner()
 
     player.clear_season_stats()
 
@@ -383,6 +387,7 @@ def career(teams):
     print(f"⚽Career Goals: {player.career_goals}⚽".center(100, " "))
     print(f"🎯Career Assists: {player.career_assists}🎯".center(100, " "))
     print(f"💪Career Clean Sheets: {player.career_clean_sheets}💪".center(100, " "))
+    print(f"🏆Premier League Titles won: {player.prem_titles}🏆".center(100," "))
 
     print("⭐"*50)
 
