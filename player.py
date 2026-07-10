@@ -242,6 +242,18 @@ class Player:
         self.prem_titles += 1
         self.season_titles = 1
 
+    def change_player_stat(self,amount):
+        attribute_list = ["pace", "shooting", "passing", "dribbling", "defending", "strength"]
+        changed_stat = random.choice(attribute_list)
+        current = getattr(self,changed_stat) #gets attribute rating
+        if current == 10:
+            return None #no change can be made since maximum already reached
+        current += amount #increments the attribute rating by certain amount
+        if current > 10:
+            current = 10
+        setattr(self,changed_stat, current) #changes the attribute rating by certain amount
+        return changed_stat
+
     def calculate_career_rating(self):
         average_career_rating = self.career_rating/(38*self.career_length)
         return average_career_rating

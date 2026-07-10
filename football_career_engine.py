@@ -1,5 +1,6 @@
 import random
 import time
+import math
 from player import Player
 from Prem_table import points_calculation
 from Prem_table import prem_table
@@ -21,7 +22,7 @@ def enter_information(team_name):
     print(f"Here are your current attributes:\n")
     time.sleep(1)
     player.generate_attributes()
-    show_stats(player,team_name)
+    show_initial_stats(player,team_name)
 
     return player,player.display_career_length()
 
@@ -31,7 +32,7 @@ def choose_user_team(teams):
 
     return user_team
 
-def show_stats(player,team_name):
+def show_initial_stats(player,team_name):
     attributes = [("Starting Age", player.display_age()),
              ("Career Length", player.display_career_length()),
              ("Team", team_name),("Position", player.display_position()),
@@ -59,6 +60,28 @@ def show_stats(player,team_name):
             time.sleep(1)
             print(f"{value} years")
             time.sleep(1)
+
+def show_stats(player):
+    """
+    Shows stats after every season
+    :param player: the user's player
+    :return: None: prints attributes
+    """
+    attributes = [
+             ("Pace", player.display_pace()),
+             ("Shooting", player.display_shooting()),
+             ("Passing", player.display_passing()),
+             ("Dribbling", player.display_dribbling()),
+             ("Defending", player.display_defending()),
+             ("Strength", player.display_strength()),
+             ("Football IQ", player.display_iq())]
+
+    for attribute, value in attributes:
+
+        print(f"{attribute}: ", end="")
+        time.sleep(0.5)
+        print(f"{value}")
+        time.sleep(0.5)
 
 def get_league_data(filename):
     teams = []
@@ -115,11 +138,11 @@ def attack_chance(team_goals, team_attack, opponent_defense):
     return team_goals
 
 def display_player_match(player):
-    '''
+    """
     Displays players match results
     :param player: the users player
     :return: None: prints results.
-    '''
+    """
     print(f"{player.name} match stats:")
     print(f"{player.match_goals} Goals,  {player.match_assists} Assists,  "
           f"{player.match_dribbles} successful dribbles")
@@ -133,12 +156,12 @@ def display_player_match(player):
     player.clear_match_stats()
 
 def generate_events(user_shots, team_chances):
-    '''
+    """
     generates a list of events to allow for a different number of team and user goals every game
     :param user_shots: the number of shots taken by the user
     :param team_chances: the number of chances for the team
     :return: events: randomized list of the order of events
-    '''
+    """
 
     events = []
 
@@ -151,18 +174,18 @@ def generate_events(user_shots, team_chances):
     return events
 
 def check_clean_sheet(player,opponent_goals):
-    '''
+    """
     checks if a clean sheet was earned
     :param player: users player
     :param opponent_goals: the amount of goals the opponent scored
     :return: None: adds clean sheet to the player's results
-    '''
+    """
     if opponent_goals == 0:
         player.add_clean_sheet()
 
 
 def match(player, team_name, team_attack, team_defense, opponent_name, opponent_attack, opponent_defense):
-    '''
+    """
     Simulates an entire match
     :param player: the users player
     :param team_name: name of users team
@@ -173,7 +196,7 @@ def match(player, team_name, team_attack, team_defense, opponent_name, opponent_
     :param opponent_defense: defense rating of opponent
     :return: points gained: number of points gained from the match
     :return: goal difference: goal difference of the match
-    '''
+    """
 
     team_goals = 0
     opponent_goals = 0
@@ -360,14 +383,41 @@ def simulate_season(full_teams,player,user_team):
     if winner == user_team["name"]:
         player.premier_league_winner()
     print()
-    print(f"🏆{winner} is the Premier League Champion🏆 ".center(100, " "))
+    print(f"🏆{winner} are Premier League Champions!🏆 ".center(100, " "))
     print()
 
     display_table(table)
 
-
+    player_improvement(player)
 
     player.clear_season_stats()
+
+def player_improvement(player):
+    options = ["Yes","No"]
+    print(f"\nDid {player.name} improve?", end = " ")
+    time.sleep(3)
+    answer = random.choice(options)
+    if answer == "Yes":
+        print(answer)
+        time.sleep(2)
+        changes = max(1, min(3,math.floor(player.season_rating) - 6))
+        print("How many attributes:", end=" ")
+        time.sleep(1)
+        print(changes)
+        time.sleep(1)
+        while changes > 0:
+            amount = random.randint(1,2)
+            attribute_improved = player.change_player_stat(amount)
+            if attribute_improved is not None:
+                print(f"Attribute Improved: {attribute_improved} +{amount}")
+                time.sleep(2)
+                changes -= 1
+
+    else:
+        print(answer)
+        time.sleep(2)
+
+
 
 def career(teams):
 
@@ -380,8 +430,12 @@ def career(teams):
     prem_teams.remove(user_team)
 
     for season in range(career_length):
-        print(f"\n🦁Season {season + 1}🦁")
+        actual_season_num = season+1
+        print(f"\n🦁Season {actual_season_num}🦁")
         simulate_season(prem_teams,player,user_team)
+        print(f"Attributes after season {actual_season_num}:")
+        show_stats(player)
+
 
     print()
     print("⭐"*50)
