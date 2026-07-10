@@ -393,6 +393,11 @@ def simulate_season(full_teams,player,user_team):
     player.clear_season_stats()
 
 def player_improvement(player):
+    """
+    Determines if a player improved or not after the season
+    :param player: the user's player
+    :return: None: adjusts player rating in function
+    """
     improved = random.choice([True,False])
     print(f"\nDid {player.name} improve?", end = " ")
     time.sleep(3)
@@ -400,19 +405,19 @@ def player_improvement(player):
     if improved:
         print("Yes")
         time.sleep(2)
-        changes = max(1, min(3,math.floor(player.season_rating) - 6))
+        changes = random.randint(1,2)
         print("How many attributes:", end=" ")
         time.sleep(1)
         print(changes)
         time.sleep(1)
 
         while changes > 0:
-            amount = random.randint(1,3)
-            attribute_improved = player.change_player_stat(amount)
+            amount = random.randint(1,2)
+            attribute_improved, final_amount = player.change_player_stat(amount)
 
             #checks if there is an attribute to be improved
             if attribute_improved is not None:
-                print(f"Attribute Improved: {attribute_improved} +{amount}")
+                print(f"Attribute Improved: {attribute_improved} +{final_amount} ")
                 time.sleep(2)
                 changes -= 1
 
@@ -420,6 +425,45 @@ def player_improvement(player):
                 print("max reached for every stat")
                 break
 
+    else:
+        print("No")
+        time.sleep(2)
+        player_downgrade(player)
+
+
+def player_downgrade(player):
+    """
+    determines if the player downgrades in any attribute
+    :param player:
+    :return:
+    """
+    worsened = random.choice([True, False])
+    print(f"\nDid {player.name} downgrade?", end=" ")
+
+    time.sleep(3)
+
+    if worsened:
+        print("Yes")
+        time.sleep(2)
+        changes = random.randint(1, 2)
+        print("How many attributes:", end=" ")
+        time.sleep(1)
+        print(changes)
+        time.sleep(1)
+
+        while changes > 0:
+            amount = random.randint(-3, -1)
+            attribute_downgraded, final_amount = player.change_player_stat(amount)
+
+            # checks if there is an attribute to be downgraded
+            if attribute_downgraded is not None:
+                print(f"Attribute downgraded: {attribute_downgraded}  {final_amount}")
+                time.sleep(2)
+                changes -= 1
+
+            else:
+                print("min reached for every stat")
+                break
     else:
         print("No")
         time.sleep(2)
@@ -440,7 +484,7 @@ def career(teams):
         actual_season_num = season+1
         print(f"\n🦁Season {actual_season_num}🦁")
         simulate_season(prem_teams,player,user_team)
-        print(f"Attributes after season {actual_season_num}:")
+        print(f"\nAttributes after season {actual_season_num}:")
         show_stats(player)
 
 

@@ -246,21 +246,34 @@ class Player:
         attribute_list = ["pace", "shooting", "passing", "dribbling", "defending", "strength","iq"]
 
 
-        if all(getattr(self,attribute) == 10 for attribute in attribute_list): #checks if every attribute is maxxed out
+        if all(getattr(self,attribute) == 10 for attribute in attribute_list) and amount > 0: #checks if every attribute is maxxed out for upgrading
             return None
 
-        #ensures chosen stat is not maxxed out
+        if all(getattr(self,attribute) == 1 for attribute in attribute_list) and amount < 0: #checks if every attribute is minimum for downgrade
+            return None
+
+
+        #ensures chosen stat is not maxxed out for upgrade and not minimum for downgrade
         while True:
             changed_stat = random.choice(attribute_list)
             current = getattr(self,changed_stat) #gets attribute rating
-            if current < 10:
-                break
+            if amount > 0:
+                if current < 10:
+                    break
+            elif amount < 0:
+                if current > 1 :
+                    break
 
         current += amount #increments the attribute rating by certain amount
         if current > 10:
             current = 10
+            amount = 1
+
+        if current < 1:
+            current = 1
+            amount = -1
         setattr(self,changed_stat, current) #changes the attribute rating by certain amount
-        return changed_stat
+        return changed_stat, amount
 
     def calculate_career_rating(self):
         average_career_rating = self.career_rating/(38*self.career_length)
