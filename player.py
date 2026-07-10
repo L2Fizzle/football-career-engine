@@ -243,7 +243,7 @@ class Player:
         self.season_titles = 1
 
     def change_player_stat(self,amount):
-        attribute_list = ["pace", "shooting", "passing", "dribbling", "defending", "strength"]
+        attribute_list = ["pace", "shooting", "passing", "dribbling", "defending", "strength","iq"]
 
 
         if all(getattr(self,attribute) == 10 for attribute in attribute_list): #checks if every attribute is maxxed out

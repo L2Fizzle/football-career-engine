@@ -407,7 +407,7 @@ def player_improvement(player):
         time.sleep(1)
 
         while changes > 0:
-            amount = random.randint(1,2)
+            amount = random.randint(1,3)
             attribute_improved = player.change_player_stat(amount)
 
             #checks if there is an attribute to be improved
