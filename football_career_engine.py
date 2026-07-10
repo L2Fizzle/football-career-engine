@@ -393,28 +393,35 @@ def simulate_season(full_teams,player,user_team):
     player.clear_season_stats()
 
 def player_improvement(player):
-    options = ["Yes","No"]
+    improved = random.choice([True,False])
     print(f"\nDid {player.name} improve?", end = " ")
     time.sleep(3)
-    answer = random.choice(options)
-    if answer == "Yes":
-        print(answer)
+
+    if improved:
+        print("Yes")
         time.sleep(2)
         changes = max(1, min(3,math.floor(player.season_rating) - 6))
         print("How many attributes:", end=" ")
         time.sleep(1)
         print(changes)
         time.sleep(1)
+
         while changes > 0:
             amount = random.randint(1,2)
             attribute_improved = player.change_player_stat(amount)
+
+            #checks if there is an attribute to be improved
             if attribute_improved is not None:
                 print(f"Attribute Improved: {attribute_improved} +{amount}")
                 time.sleep(2)
                 changes -= 1
 
+            else:
+                print("max reached for every stat")
+                break
+
     else:
-        print(answer)
+        print("No")
         time.sleep(2)
 
 

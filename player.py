@@ -244,10 +244,18 @@ class Player:
 
     def change_player_stat(self,amount):
         attribute_list = ["pace", "shooting", "passing", "dribbling", "defending", "strength"]
-        changed_stat = random.choice(attribute_list)
-        current = getattr(self,changed_stat) #gets attribute rating
-        if current == 10:
-            return None #no change can be made since maximum already reached
+
+
+        if all(getattr(self,attribute) == 10 for attribute in attribute_list): #checks if every attribute is maxxed out
+            return None
+
+        #ensures chosen stat is not maxxed out
+        while True:
+            changed_stat = random.choice(attribute_list)
+            current = getattr(self,changed_stat) #gets attribute rating
+            if current < 10:
+                break
+
         current += amount #increments the attribute rating by certain amount
         if current > 10:
             current = 10
