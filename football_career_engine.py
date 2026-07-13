@@ -1,6 +1,8 @@
 import random
 import time
 import math
+from idlelib.pyparse import trans
+
 from player import Player
 from Prem_table import points_calculation
 from Prem_table import prem_table
@@ -388,6 +390,10 @@ def simulate_season(full_teams,player,user_team):
 
     display_table(table)
 
+    minimum_value, maximum_value = calculate_transfer_value(player)
+    transfer_value = (minimum_value + maximum_value) /2000000
+    print(f"\n{player.display_name()} Transfer value: £{round(transfer_value,1)}M")
+
     player_improvement(player)
 
     player.clear_season_stats()
@@ -467,6 +473,40 @@ def player_downgrade(player):
     else:
         print("No")
         time.sleep(2)
+
+def calculate_transfer_value(player):
+    """
+    calculates player transfer value based on season stats and role
+    :param player: user's player
+    :return: min_value: minimum possible value offered that would be looked at
+    :return: max_value: maximum transfer value of player
+    """
+    min_value = 0
+    max_value = 0
+    if player.season_rating >= 8.5:
+        min_value += 100000000
+    elif player.season_rating >= 8.0:
+        min_value += 70000000
+    elif player.season_rating >= 7.5:
+        min_value += 50000000
+    elif player.season_rating >= 7.0:
+        min_value += 30000000
+
+    max_value += min_value
+    if player.display_role() == "attacker":
+        max_value += player.season_goals * 2000000
+        max_value += player.season_assists * 1000000
+        max_value += player.season_dribbles * 500000
+    elif player.display_role() == "midfielder":
+        max_value += player.season_goals * 2000000
+        max_value += player.season_assists * 2000000
+        max_value += player.season_dribbles * 500000
+    elif player.display_role() == "defender":
+        max_value += player.season_goals * 2000000
+        max_value += player.season_assists * 2000000
+        max_value += player.season_clean_sheets * 2000000
+
+    return min_value,max_value
 
 
 

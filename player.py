@@ -39,6 +39,7 @@ class Player:
 
         self.season_goals = 0
         self.season_assists = 0
+        self.season_dribbles = 0
         self.season_clean_sheets = 0
         self.season_rating = 0
         self.season_titles = 0
@@ -51,6 +52,10 @@ class Player:
 
 
     def generate_attributes(self):
+        """
+        generates player attributes using random
+        :return:
+        """
 
         self.position = random.choice(POSITIONS_LIST)
 
@@ -69,16 +74,45 @@ class Player:
         self.chance_per_shot = self.shooting * 0.03
 
     def display_name(self):
+        """
+        displays player's name
+        :return:
+        """
         return self.name
 
     def display_age(self):
+        """
+        displays player age
+        :return:
+        """
         return self.age
 
     def display_career_length(self):
+        """
+        displays player career length
+        :return:
+        """
         return self.career_length
 
     def display_position(self):
+        """
+        displays player position
+        :return:
+        """
         return self.position
+
+    def display_role(self):
+        """
+        displays player role based on position
+        :return:
+        """
+
+        if self.position in ["LWB", "RWB", "LB", "RB", "CB"]:
+            return "defender"
+        elif self.position in ["LM", "RM", "CAM", "CM", "CDM"]:
+            return "midfielder"
+        else:
+            return "attacker"
 
     def display_pace(self):
         return self.pace
@@ -138,6 +172,7 @@ class Player:
     def clear_season_stats(self):
         self.season_goals = 0
         self.season_assists = 0
+        self.season_dribbles = 0
         self.season_rating = 6.0
         self.season_clean_sheets = 0
         self.season_titles = 0
@@ -156,7 +191,7 @@ class Player:
             self.career_goals += 1
 
     def key_pass(self, opponent_defense):
-        assist_chance = round(self.passing - (opponent_defense / 2))
+        assist_chance = round(self.playmaking_ability - (opponent_defense / 2.25)) #balanced assist chance and made based on passing and football IQ
 
         odds_of_assisting = random.randint(10 - self.playmaking_ability, 10) #odds of assisting depends on player's playmaking ability stat
 
@@ -210,6 +245,7 @@ class Player:
 
         if dribble_chance >= successful_dribble_odds:
             self.match_dribbles += 1
+            self.season_dribbles += 1
 
     def add_clean_sheet(self):
         self.clean_sheet += 1
