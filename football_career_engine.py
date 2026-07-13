@@ -1,7 +1,5 @@
 import random
 import time
-import math
-from idlelib.pyparse import trans
 
 from player import Player
 from Prem_table import points_calculation
@@ -281,6 +279,27 @@ def season_table(teams, user_team,user_team_points,user_team_gd):
     prem_table(teams_and_points)
     return teams_and_points
 
+def player_season(player):
+    """
+    prints player's end of season stats
+    :param player:
+    :return:
+    """
+    print("⚽" * 50)
+    print("END OF SEASON STATS".center(100, " "))
+    print("⚽" * 50)
+    print()
+
+    print(f"{player.name}".center(100, " "))
+    print(f"⚽Season Goals: {player.season_goals}⚽".center(100, " "))
+    print(f"🎯Season Assists: {player.season_assists}🎯".center(100, " "))
+    print(f"💪Clean Sheets: {player.season_clean_sheets}💪".center(99, " "))
+
+    player.calculate_season_rating()
+
+    print(f"📋Average Rating: {player.season_rating:.1f}📋".center(100, " "))
+
+
 def simulate_season(full_teams,player,user_team):
 
     all_teams = full_teams.copy()
@@ -303,6 +322,7 @@ def simulate_season(full_teams,player,user_team):
                                                                                                        opponent["attack"],
                                                                                                        opponent["defense"],
                                                                                                        opponent["consistency"])
+
         opponent_attack, opponent_defense = matchday_rating(opponent_attack, opponent_defense, opponent_consistency)
         team_attack, team_defense = matchday_rating(team_attack, team_defense, team_consistency)
 
@@ -359,20 +379,8 @@ def simulate_season(full_teams,player,user_team):
         team_attack, team_defense = user_team["attack"], user_team["defense"]
         time.sleep(sim_speed)
 
+    player_season(player)
 
-    print("⚽"*50)
-    print("END OF SEASON STATS".center(100," "))
-    print("⚽"*50)
-    print()
-
-    print(f"{player.name}".center(100, " "))
-    print(f"⚽Season Goals: {player.season_goals}⚽".center(100, " "))
-    print(f"🎯Season Assists: {player.season_assists}🎯".center(100, " "))
-    print(f"💪Clean Sheets: {player.season_clean_sheets}💪".center(99," "))
-
-    player.calculate_season_rating()
-
-    print(f"📋Average Rating: {player.season_rating:.1f}📋".center(100, " "))
     print(f"{team_name} Record: {team_wins}W {team_draws}D {team_losses}L".center(102, " "))
     print(f"{team_name} finishes the season with {team_points} points".center(100, " "))
 
@@ -390,13 +398,10 @@ def simulate_season(full_teams,player,user_team):
 
     display_table(table)
 
-    minimum_value, maximum_value = calculate_transfer_value(player)
-    transfer_value = (minimum_value + maximum_value) /2000000
-    print(f"\n{player.display_name()} Transfer value: £{round(transfer_value,1)}M")
+    player.calculate_transfer_value()
 
-    player_improvement(player)
+    print(f"\n{player.display_name()} Transfer value: £{round(player.transfer_value,1)}M")
 
-    player.clear_season_stats()
 
 def player_improvement(player):
     """
@@ -474,47 +479,90 @@ def player_downgrade(player):
         print("No")
         time.sleep(2)
 
-def calculate_transfer_value(player):
+
+
+def transfer_options(player,teams,min_value,max_value):
     """
-    calculates player transfer value based on season stats and role
+    provides options for player to transfer to depending on their average rating for the season.
+    Also provides transfer offer based on player's transfer value
     :param player: user's player
-    :return: min_value: minimum possible value offered that would be looked at
-    :return: max_value: maximum transfer value of player
+    :param teams: every team in the league
+    :param min_value: minimum transfer value of player
+    :param max_value: maximum transfer value of player
+    :return: teams_offering(list): list of the teams offering a transfer
     """
-    min_value = 0
-    max_value = 0
-    if player.season_rating >= 8.5:
-        min_value += 100000000
-    elif player.season_rating >= 8.0:
-        min_value += 70000000
-    elif player.season_rating >= 7.5:
-        min_value += 50000000
-    elif player.season_rating >= 7.0:
-        min_value += 30000000
+    elite_teams = teams[0:6]
+    mid_table_teams = teams[6:13]
+    lower_teams = teams[13:20]
 
-    max_value += min_value
-    if player.display_role() == "attacker":
-        max_value += player.season_goals * 2000000
-        max_value += player.season_assists * 1000000
-        max_value += player.season_dribbles * 500000
-    elif player.display_role() == "midfielder":
-        max_value += player.season_goals * 2000000
-        max_value += player.season_assists * 2000000
-        max_value += player.season_dribbles * 500000
-    elif player.display_role() == "defender":
-        max_value += player.season_goals * 2000000
-        max_value += player.season_assists * 2000000
-        max_value += player.season_clean_sheets * 2000000
+    teams_offering = []
 
-    return min_value,max_value
+    if player.season_rating >= 7.7:
+        teams_offering.append([random.choice(elite_teams), ((int(random.triangular(min_value, max_value + 1, max_value)))/1000000)])
+        teams_offering.append([random.choice(elite_teams), ((int(random.triangular(min_value, max_value + 1, max_value)))/1000000)])
+    if player.season_rating >= 7.2:
+        teams_offering.append([random.choice(mid_table_teams), ((int(random.randint(min_value, max_value + 1)))/1000000)])
+    if player.season_rating <= 7.6:
+        teams_offering.append([random.choice(mid_table_teams), ((int(random.randint(min_value, max_value + 1)))/1000000)])
+        teams_offering.append([random.choice(lower_teams), ((int(random.triangular(min_value, max_value + 1, min_value)))/1000000)])
+    if player.season_rating < 7.2:
+        teams_offering.append([random.choice(lower_teams), ((int(random.triangular(min_value, max_value + 1, min_value)))/1000000)])
+    return teams_offering
 
+def display_career_stats(player, clubs_played):
+    """
+    displays player's career stats
+    :param player: user's player
+    :param clubs_played: clubs the user played for in their career
+    :return: None: prints career stats
+    """
+    print()
+    print("⭐"*50 ,"\n")
+    print(f"{player.name} Career Stats: ".center(105, " "))
+    print()
+
+    played_for = " ".join(clubs_played)
+    print(f"Clubs Played for: {played_for}".center(100, " "))
+    print(f"👕{player.career_length*38} appearances👕".center(100, " "))
+    print(f"⚽Career Goals: {player.career_goals}⚽".center(100, " "))
+    print(f"🎯Career Assists: {player.career_assists}🎯".center(100, " "))
+    print(f"💪Career Clean Sheets: {player.career_clean_sheets}💪".center(100, " "))
+    print(f"🏆Premier League Titles won: {player.prem_titles}🏆".center(100," "))
+    print()
+
+    print(f"⚽Most Goals in a Season: {player.highest_goals}⚽".center(100, " "))
+    print(f"🎯Most Assists in a Season: {player.highest_assists}🎯".center(100, " "))
+    print(f"🏆Highest Transfer Value: {player.highest_value}🏆".center(100, " "),"\n")
+
+    print("⭐"*50)
+
+def choose_transfer(options):
+    possible_choice = ["0","1","2","3"]
+    num_of_options = len(options)
+    print(f"\n{num_of_options} clubs want to sign you!")
+    time.sleep(2)
+    for club in options:
+        print(f"{club[0]["name"]} wants to sign you for £{round(club[1],1)}M")
+        time.sleep(2)
+
+    while True:
+        user_choice = input(f"\nEnter 0 to stay at your current club, 1 to join {options[0][0]["name"]},"
+                            f" 2 to join {options[1][0]["name"]},"
+                            f" 3 to join {options[2][0]["name"]}: ")
+        if user_choice in possible_choice:
+            return user_choice
+        else:
+            print("Please enter one of the following choices")
 
 
 def career(teams):
 
+
     prem_teams = teams.copy()
 
     user_team = choose_user_team(teams)
+
+    clubs_played_for = [user_team["name"]]
 
     player,career_length = enter_information(user_team["name"])
 
@@ -524,22 +572,35 @@ def career(teams):
         actual_season_num = season+1
         print(f"\n🦁Season {actual_season_num}🦁")
         simulate_season(prem_teams,player,user_team)
-        print(f"\nAttributes after season {actual_season_num}:")
-        show_stats(player)
+
+        if actual_season_num % 3 == 0:
+            options = transfer_options(player,prem_teams,player.min_value, player.max_value)
+            user_choice = choose_transfer(options)
+
+            if user_choice == "1":
+                user_team = options[0][0]
+            elif user_choice == "2":
+                user_team = options[1][0]
+            elif user_choice == "3":
+                user_team = options[2][0]
+
+            if user_choice != 0:
+                clubs_played_for.append(user_team["name"])
+                prem_teams = teams.copy()
+                prem_teams.remove(user_team)
+            player_improvement(player)
+            print(f"\nAttributes after season {actual_season_num}:")
+            time.sleep(1)
+            print(f"Team: {user_team["name"]}")
+            show_stats(player)
+
+        player.clear_season_stats()
 
 
-    print()
-    print("⭐"*50)
-    print(f"{player.name} Career Stats: ".center(105, " "))
-    print()
 
-    print(f"👕{player.career_length*38} appearances👕".center(100, " "))
-    print(f"⚽Career Goals: {player.career_goals}⚽".center(100, " "))
-    print(f"🎯Career Assists: {player.career_assists}🎯".center(100, " "))
-    print(f"💪Career Clean Sheets: {player.career_clean_sheets}💪".center(100, " "))
-    print(f"🏆Premier League Titles won: {player.prem_titles}🏆".center(100," "))
+    display_career_stats(player,clubs_played_for)
 
-    print("⭐"*50)
+
 
 
 def main():

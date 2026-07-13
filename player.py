@@ -44,11 +44,22 @@ class Player:
         self.season_rating = 0
         self.season_titles = 0
 
+
+
+        self.transfer_value = 0 #transfer value in Millions
+        #sets minimum and maximum value a club can offer
+        self.min_value = 0
+        self.max_value = 0
+
         self.career_goals = 0
         self.career_assists = 0
         self.career_clean_sheets = 0
         self.career_rating = 6.0
         self.prem_titles = 0
+
+        self.highest_goals = 0 #highest goal season
+        self.highest_assists = 0
+        self.highest_value = 0
 
 
     def generate_attributes(self):
@@ -176,6 +187,9 @@ class Player:
         self.season_rating = 6.0
         self.season_clean_sheets = 0
         self.season_titles = 0
+        self.transfer_value = 0
+        self.min_value = 0
+        self.max_value = 0
 
     def shot_attempt(self,opponent_defense):
         chance = self.chance_per_shot
@@ -310,6 +324,59 @@ class Player:
             amount = -1
         setattr(self,changed_stat, current) #changes the attribute rating by certain amount
         return changed_stat, amount
+
+    def check_highest(self):
+        """
+        checks if any season stats are the user's highest
+        :return: None: adjusts attributes
+        """
+        if self.season_goals > self.highest_goals:
+            self.highest_goals = self.season_goals
+
+        if self.season_assists > self.highest_assists:
+            self.highest_assists = self.season_assists
+
+        if self.transfer_value > self.highest_value:
+            self.highest_value = self.transfer_value
+
+    def calculate_transfer_value(self):
+        """
+        calculates player transfer value based on season stats and role
+        :return: min_value: minimum possible value offered that would be looked at
+        :return: max_value: maximum transfer value of player
+        """
+        min_value = 0
+        max_value = 0
+        if self.season_rating >= 8.5:
+            min_value += 100000000
+        elif self.season_rating >= 8.0:
+            min_value += 70000000
+        elif self.season_rating >= 7.5:
+            min_value += 50000000
+        elif self.season_rating >= 7.0:
+            min_value += 30000000
+        else:
+            min_value += 10000000
+
+        max_value += min_value
+        if self.display_role() == "attacker":
+            max_value += self.season_goals * 2000000
+            max_value += self.season_assists * 1000000
+            max_value += self.season_dribbles * 500000
+        elif self.display_role() == "midfielder":
+            max_value += self.season_goals * 2000000
+            max_value += self.season_assists * 2000000
+            max_value += self.season_dribbles * 500000
+        elif self.display_role() == "defender":
+            max_value += self.season_goals * 2000000
+            max_value += self.season_assists * 2000000
+            max_value += self.season_clean_sheets * 2000000
+
+        self.transfer_value = (min_value + max_value) /2000000
+
+        self.min_value, self.max_value = min_value, max_value
+
+
 
     def calculate_career_rating(self):
         average_career_rating = self.career_rating/(38*self.career_length)
