@@ -532,7 +532,7 @@ def display_career_stats(player, clubs_played):
 
     print(f"⚽Most Goals in a Season: {player.highest_goals}⚽".center(100, " "))
     print(f"🎯Most Assists in a Season: {player.highest_assists}🎯".center(100, " "))
-    print(f"🏆Highest Transfer Value: {player.highest_value}🏆".center(100, " "),"\n")
+    print(f"🏆Highest Transfer Value: £{player.highest_value}M🏆".center(100, " "),"\n")
 
     print("⭐"*50)
 
@@ -573,7 +573,7 @@ def career(teams):
         print(f"\n🦁Season {actual_season_num}🦁")
         simulate_season(prem_teams,player,user_team)
 
-        if actual_season_num % 3 == 0:
+        if actual_season_num % 3 == 0 and actual_season_num != career_length:
             options = transfer_options(player,prem_teams,player.min_value, player.max_value)
             user_choice = choose_transfer(options)
 
@@ -584,7 +584,7 @@ def career(teams):
             elif user_choice == "3":
                 user_team = options[2][0]
 
-            if user_choice != 0:
+            if user_choice != "0":
                 clubs_played_for.append(user_team["name"])
                 prem_teams = teams.copy()
                 prem_teams.remove(user_team)
@@ -594,10 +594,11 @@ def career(teams):
             print(f"Team: {user_team["name"]}")
             show_stats(player)
 
+        player.check_highest()
         player.clear_season_stats()
 
 
-
+    time.sleep(2)
     display_career_stats(player,clubs_played_for)
 
 
