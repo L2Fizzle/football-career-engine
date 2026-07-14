@@ -71,7 +71,7 @@ class Player:
         self.position = random.choice(POSITIONS_LIST)
 
         self.age = random.randint(15,20)
-        self.career_length = 6
+        self.career_length = random.randint(15,25)
 
         self.pace = random.randint(1,10)
         self.shooting = random.randint(1,10)
