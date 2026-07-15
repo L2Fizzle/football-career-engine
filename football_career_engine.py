@@ -155,11 +155,12 @@ def display_player_match(player):
 
     player.clear_match_stats()
 
-def generate_events(user_shots, team_chances):
+def generate_events(user_shots, team_chances,user_passes):
     """
     generates a list of events to allow for a different number of team and user goals every game
     :param user_shots: the number of shots taken by the user
     :param team_chances: the number of chances for the team
+    :param user_passes: the amount of user key passes that can result in goals (or assists for the user)
     :return: events: randomized list of the order of events
     """
 
@@ -169,6 +170,8 @@ def generate_events(user_shots, team_chances):
         events.append("Team")
     for index in range(user_shots):
         events.append("Player")
+    for index in range(user_passes):
+        events.append("Chance")
 
     random.shuffle(events)
     return events
@@ -207,20 +210,21 @@ def match(player, team_name, team_attack, team_defense, opponent_name, opponent_
 
     team_chances = random.randint(round(team_attack/2.5),round(team_attack/1.5)) #team chances (excluding user chances)
 
-    events = generate_events(user_shot_attempts, team_chances)
+    events = generate_events(user_shot_attempts, team_chances,user_key_pass_attempts)
 
     for chance in range(len(events)):
         if events[chance] == "Team":
             team_goals = attack_chance(team_goals, team_attack, opponent_defense)
-        else:
+        elif events[chance] == "Player":
             player_goals = player.match_goals
             player.shot_attempt(opponent_defense)
             if player_goals < player.match_goals:
                 team_goals += 1
-
-
-    for ball in range(user_key_pass_attempts):
-        player.key_pass(opponent_defense)
+        else:
+            player_assists = player.match_assists
+            player.key_pass(opponent_defense, team_attack)
+            if player_assists < player.match_assists:
+                team_goals += 1
 
     for dribble in range(dribble_attempts):
         player.dribble_attempt(opponent_defense)
@@ -234,7 +238,6 @@ def match(player, team_name, team_attack, team_defense, opponent_name, opponent_
 
     player.calculate_passes()
 
-    player.match_assists = min(player.match_assists, (team_goals - player.match_goals)) #reduces over inflating of goals and allows more realistic match simulations
 
     player.update_assists()
 

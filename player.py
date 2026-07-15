@@ -83,6 +83,7 @@ class Player:
         self.playmaking_ability = round((self.passing + self.iq)/2)
 
         self.chance_per_shot = self.shooting * 0.03
+        self.chance_per_created = self.playmaking_ability * 0.03 #chance of getting an assist per chance created
 
     def display_name(self):
         """
@@ -204,12 +205,16 @@ class Player:
             self.season_goals += 1
             self.career_goals += 1
 
-    def key_pass(self, opponent_defense):
-        assist_chance = round(self.playmaking_ability - (opponent_defense / 2.25)) #balanced assist chance and made based on passing and football IQ
+    def key_pass(self, opponent_defense,team_offence):
+        assist_chance = self.chance_per_created
 
-        odds_of_assisting = random.randint(10 - self.playmaking_ability, 10) #odds of assisting depends on player's playmaking ability stat
+        assist_chance *= (1 - ((opponent_defense+team_offence/2) - 5) * 0.08) #allows opponent defence level and team's attack level to affect the chance
 
-        if assist_chance >= odds_of_assisting:
+        # balances assist chance
+        chance = max(0.01, assist_chance)
+        chance = min(0.20, assist_chance)
+
+        if assist_chance >= random.random():
             self.match_assists += 1
 
     def update_assists(self):
