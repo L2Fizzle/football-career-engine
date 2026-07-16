@@ -192,13 +192,16 @@ class Player:
         self.min_value = 0
         self.max_value = 0
 
-    def shot_attempt(self,opponent_defense):
+    def shot_attempt(self,opponent_defense,team_offence):
         chance = self.chance_per_shot
-        chance *= (1 - (opponent_defense - 5) * 0.08) # allows opponent's defence level to affect how great the chance is
 
+        modifier = 1
+        modifier *= 1 - (opponent_defense - 5) * 0.08  # allows opponent's defence level to affect how great the chance is
+        modifier *= 1 + (team_offence - 4) * 0.08
+
+        chance *= modifier
         #balances chance
-        chance = max(0.02,chance)
-        chance = min(0.45,chance)
+        chance = max(0.02,min(0.5,chance))
 
         if chance >= random.random():
             self.match_goals += 1
@@ -208,18 +211,20 @@ class Player:
     def key_pass(self, opponent_defense,team_offence):
         assist_chance = self.chance_per_created
 
-        assist_chance *= (1 - ((opponent_defense+team_offence/2) - 5) * 0.08) #allows opponent defence level and team's attack level to affect the chance
+        modifier = 1
+        # allows opponent defence level and team's attack level to affect the chance
+        modifier *= 1 - (opponent_defense - 3.5) * 0.1
+        modifier *= 1 + (team_offence/2 - 5) * 0.08
+        assist_chance *= modifier
 
-        # balances assist chance
-        chance = max(0.01, assist_chance)
-        chance = min(0.20, assist_chance)
+        # balances assist chance so it is not too extreme
+        chance = max(0.01, min(0.17, assist_chance))
 
         if assist_chance >= random.random():
             self.match_assists += 1
+            self.season_assists += 1
+            self.career_assists += 1
 
-    def update_assists(self):
-        self.season_assists += self.match_assists
-        self.career_assists += self.match_assists
 
     def calculate_passes(self):
         if self.position in  ["ST", "CF", "LW", "RW"]:

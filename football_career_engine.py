@@ -1,3 +1,4 @@
+import math
 import random
 import time
 
@@ -205,7 +206,7 @@ def match(player, team_name, team_attack, team_defense, opponent_name, opponent_
     opponent_goals = 0
 
     user_shot_attempts = random.randint(0,int(team_attack/2)) #makes shooting opportunities based on team's attacking threat
-    user_key_pass_attempts = random.randint(0,int(player.playmaking_ability/2))
+    user_key_pass_attempts = random.randint(0,math.ceil(int(player.playmaking_ability/2)))
     dribble_attempts = random.randint(0,int(player.dribbling/2))
 
     team_chances = random.randint(round(team_attack/2.5),round(team_attack/1.5)) #team chances (excluding user chances)
@@ -217,7 +218,7 @@ def match(player, team_name, team_attack, team_defense, opponent_name, opponent_
             team_goals = attack_chance(team_goals, team_attack, opponent_defense)
         elif events[chance] == "Player":
             player_goals = player.match_goals
-            player.shot_attempt(opponent_defense)
+            player.shot_attempt(opponent_defense,team_attack)
             if player_goals < player.match_goals:
                 team_goals += 1
         else:
@@ -237,9 +238,6 @@ def match(player, team_name, team_attack, team_defense, opponent_name, opponent_
 
 
     player.calculate_passes()
-
-
-    player.update_assists()
 
     print(f"\nScore: {team_name}  {team_goals} - {opponent_goals}  {opponent_name}\n")
 
@@ -419,7 +417,7 @@ def player_improvement(player):
     if improved:
         print("Yes")
         time.sleep(2)
-        changes = random.randint(1,2)
+        changes = random.randint(2,4)
         print("How many attributes:", end=" ")
         time.sleep(1)
         print(changes)
@@ -459,7 +457,7 @@ def player_downgrade(player):
     if worsened:
         print("Yes")
         time.sleep(2)
-        changes = random.randint(1, 2)
+        changes = random.randint(2, 4)
         print("How many attributes:", end=" ")
         time.sleep(1)
         print(changes)
@@ -501,6 +499,7 @@ def transfer_options(player,teams,min_value,max_value):
     num_interested = random.randint(1,2) #randomizes number of interested teams from each category
 
     teams_offering = []
+    clubs_seen = set()
 
     #teams offering depends on player's season. Better season = better teams calling
     for team_offering in range(num_interested):
@@ -508,14 +507,16 @@ def transfer_options(player,teams,min_value,max_value):
         if player.season_rating >= 7.7 :
             club = random.choice(elite_teams)
             price = ((int(random.triangular(min_value, max_value + 1, max_value)))/1000000)
-            if club not in teams_offering:
+            if club["name"] not in clubs_seen:
                 teams_offering.append([club, price])
+                clubs_seen.add(club["name"])
 
         if player.season_rating >= 7.2:
             club = random.choice(mid_table_teams)
             price = ((int(random.randint(min_value, max_value + 1)))/1000000)
-            if club not in teams_offering:
+            if club["name"] not in clubs_seen:
                 teams_offering.append([club, price])
+                clubs_seen.add(club["name"])
 
         if player.season_rating <= 7.6:
             club_one = random.choice(mid_table_teams)
@@ -523,17 +524,20 @@ def transfer_options(player,teams,min_value,max_value):
             club_two = random.choice(lower_teams)
             price_two = ((int(random.triangular(min_value, max_value + 1, min_value)))/1000000)
 
-            if club_one not in teams_offering:
+            if club_one["name"] not in clubs_seen:
                 teams_offering.append([club_one,price_one])
+                clubs_seen.add(club_one["name"])
 
-            if club_two not in teams_offering:
+            if club_two["name"] not in clubs_seen:
                 teams_offering.append([club_two,price_two])
+                clubs_seen.add(club_two["name"])
 
         if player.season_rating < 7.2:
             club = random.choice(lower_teams)
             price = ((int(random.triangular(min_value, max_value + 1, min_value))) / 1000000)
-            if club not in teams_offering:
+            if club["name"] not in clubs_seen:
                 teams_offering.append([club,price])
+                clubs_seen.add(club["name"])
 
     return teams_offering
 
