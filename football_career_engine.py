@@ -494,22 +494,47 @@ def transfer_options(player,teams,min_value,max_value):
     :param max_value: maximum transfer value of player
     :return: teams_offering(list): list of the teams offering a transfer
     """
-    elite_teams = teams[0:6]
-    mid_table_teams = teams[6:13]
-    lower_teams = teams[13:20]
+    elite_teams = teams[0:5]
+    mid_table_teams = teams[5:11]
+    lower_teams = teams[11:20]
+
+    num_interested = random.randint(1,2) #randomizes number of interested teams from each category
 
     teams_offering = []
 
-    if player.season_rating >= 7.7:
-        teams_offering.append([random.choice(elite_teams), ((int(random.triangular(min_value, max_value + 1, max_value)))/1000000)])
-        teams_offering.append([random.choice(elite_teams), ((int(random.triangular(min_value, max_value + 1, max_value)))/1000000)])
-    if player.season_rating >= 7.2:
-        teams_offering.append([random.choice(mid_table_teams), ((int(random.randint(min_value, max_value + 1)))/1000000)])
-    if player.season_rating <= 7.6:
-        teams_offering.append([random.choice(mid_table_teams), ((int(random.randint(min_value, max_value + 1)))/1000000)])
-        teams_offering.append([random.choice(lower_teams), ((int(random.triangular(min_value, max_value + 1, min_value)))/1000000)])
-    if player.season_rating < 7.2:
-        teams_offering.append([random.choice(lower_teams), ((int(random.triangular(min_value, max_value + 1, min_value)))/1000000)])
+    #teams offering depends on player's season. Better season = better teams calling
+    for team_offering in range(num_interested):
+
+        if player.season_rating >= 7.7 :
+            club = random.choice(elite_teams)
+            price = ((int(random.triangular(min_value, max_value + 1, max_value)))/1000000)
+            if club not in teams_offering:
+                teams_offering.append([club, price])
+
+        if player.season_rating >= 7.2:
+            club = random.choice(mid_table_teams)
+            price = ((int(random.randint(min_value, max_value + 1)))/1000000)
+            if club not in teams_offering:
+                teams_offering.append([club, price])
+
+        if player.season_rating <= 7.6:
+            club_one = random.choice(mid_table_teams)
+            price_one = ((int(random.randint(min_value, max_value + 1)))/1000000)
+            club_two = random.choice(lower_teams)
+            price_two = ((int(random.triangular(min_value, max_value + 1, min_value)))/1000000)
+
+            if club_one not in teams_offering:
+                teams_offering.append([club_one,price_one])
+
+            if club_two not in teams_offering:
+                teams_offering.append([club_two,price_two])
+
+        if player.season_rating < 7.2:
+            club = random.choice(lower_teams)
+            price = ((int(random.triangular(min_value, max_value + 1, min_value))) / 1000000)
+            if club not in teams_offering:
+                teams_offering.append([club,price])
+
     return teams_offering
 
 def display_career_stats(player, clubs_played):
@@ -524,7 +549,7 @@ def display_career_stats(player, clubs_played):
     print(f"{player.name} Career Stats: ".center(105, " "))
     print()
 
-    played_for = " ".join(clubs_played)
+    played_for = ",".join(clubs_played)
     print(f"Clubs Played for: {played_for}".center(100, " "))
     print(f"👕{player.career_length*38} appearances👕".center(100, " "))
     print(f"⚽Career Goals: {player.career_goals}⚽".center(100, " "))
@@ -549,9 +574,13 @@ def choose_transfer(options):
         time.sleep(2)
 
     while True:
-        user_choice = input(f"\nEnter 0 to stay at your current club, 1 to join {options[0][0]["name"]},"
-                            f" 2 to join {options[1][0]["name"]},"
-                            f" 3 to join {options[2][0]["name"]}: ")
+        print(f"\nEnter 0 to stay at your current club,",end="")
+
+        for option in range(num_of_options):
+            print(f"   {option+1} to join {options[option][0]["name"]}",end="")
+
+        user_choice = input(": ")
+
         if user_choice in possible_choice:
             return user_choice
         else:
