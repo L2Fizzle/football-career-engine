@@ -34,62 +34,89 @@ def choose_user_team(teams):
     return user_team
 
 def show_initial_stats(player,team_name):
-    attributes = [("Starting Age", player.display_age()),
+    """
+    Shows stats of player at the beginning of career
+    :param player: user's player
+    :param team_name: name of user's team
+    :return: None: prints attributes and descriptions
+    """
+    #desc = description
+    player.stat_description()
+    non_desc_attributes = [("Starting Age", player.display_age()),
              ("Career Length", player.display_career_length()),
-             ("Team", team_name),("Position", player.display_position()),
-             ("Pace", player.display_pace()),
-             ("Shooting", player.display_shooting()),
-             ("Passing", player.display_passing()),
-             ("Dribbling", player.display_dribbling()),
-             ("Defending", player.display_defending()),
-             ("Strength", player.display_strength()),
-             ("Football IQ", player.display_iq()),
-             ("Height", player.display_height())]
+             ("Team", team_name),("Position", player.display_position())]
+
+    attributes_with_desc = [("Height", player.display_height(),player.height_desc),
+             ("Pace", player.display_pace(), player.pace_desc),
+             ("Shooting", player.display_shooting(),player.shooting_desc),
+             ("Passing", player.display_passing(),player.passing_desc),
+             ("Dribbling", player.display_dribbling(),player.dribbling_desc),
+             ("Defending", player.display_defending(),player.defending_desc),
+             ("Strength", player.display_strength(),player.strength_desc),
+             ("Football IQ", player.display_iq(),player.iq_desc)
+             ]
 
 
     print("Generating player...")
     time.sleep(2)
 
-    for attribute, value in attributes:
+    for attribute, value in non_desc_attributes:
 
         if attribute != "Career Length":
-            print(f"{attribute}: ", end="")
+            print(f"{str(attribute) + ":":<15}", end="")
             time.sleep(1)
             print(f"{value}")
             time.sleep(1)
-        elif attribute == "Height":
-            print(f"{attribute}: ",end="")
-            time.sleep(1)
-            print(f"{value}cm")
-            time.sleep(1)
         else:
-            print(f"{attribute}: ", end="")
+            print(f"{str(attribute) + ":":<15}", end="")
             time.sleep(1)
             print(f"{value} years")
+            time.sleep(1)
+    print()
+
+
+    for attribute,value,description in attributes_with_desc:
+        if attribute != "Height":
+            print(f"{str(attribute) + ":": <15}", end="")
+            time.sleep(1)
+            print(f"{value:<20}",end="")
+            time.sleep(1)
+            print(description)
+            time.sleep(1)
+        else:
+            print(f"{str(attribute) + ":":<15}",end="")
+            time.sleep(1)
+            print(f"{str(value) + "cm":<20}",end="")
+            time.sleep(1)
+            print(description)
             time.sleep(1)
 
 
 def show_stats(player):
     """
-    Shows stats after every season
+    Shows stats after every few seasons
     :param player: the user's player
-    :return: None: prints attributes
+    :return: None: prints attributes and description
     """
-    attributes = [
-             ("Pace", player.display_pace()),
-             ("Shooting", player.display_shooting()),
-             ("Passing", player.display_passing()),
-             ("Dribbling", player.display_dribbling()),
-             ("Defending", player.display_defending()),
-             ("Strength", player.display_strength()),
-             ("Football IQ", player.display_iq())]
+    player.stat_description()
+    attributes_with_desc = [
+             ("Pace", player.display_pace(), player.pace_desc),
+             ("Shooting", player.display_shooting(),player.shooting_desc),
+             ("Passing", player.display_passing(),player.passing_desc),
+             ("Dribbling", player.display_dribbling(),player.dribbling_desc),
+             ("Defending", player.display_defending(),player.defending_desc),
+             ("Strength", player.display_strength(),player.strength_desc),
+             ("Football IQ", player.display_iq(),player.iq_desc)
+             ]
 
-    for attribute, value in attributes:
+    for attribute, value, description in attributes_with_desc:
+        print(f"{str(attribute) + ":":<15}", end="")
+        time.sleep(0.5)
+        print(f"{value:<20}",end="")
+        time.sleep(0.5)
+        print(description)
+        time.sleep(0.5)
 
-        print(f"{attribute}: ", end="")
-        time.sleep(0.5)
-        print(f"{value}")
-        time.sleep(0.5)
 
 def get_league_data(filename):
     teams = []
@@ -576,7 +603,7 @@ def display_career_stats(player, clubs_played):
     print("⭐"*50)
 
 def choose_transfer(options):
-    possible_choice = ["0","1","2","3"]
+    possible_choice = ["0","1","2","3","4","5","6","7"]
     num_of_options = len(options)
     print(f"\n{num_of_options} clubs want to sign you!")
     time.sleep(2)
@@ -620,12 +647,10 @@ def career(teams):
             options = transfer_options(player,prem_teams,player.min_value, player.max_value)
             user_choice = choose_transfer(options)
 
-            if user_choice == "1":
-                user_team = options[0][0]
-            elif user_choice == "2":
-                user_team = options[1][0]
-            elif user_choice == "3":
-                user_team = options[2][0]
+            if user_choice != "0":
+                user_team = options[int(user_choice)-1][0]
+
+
 
             if user_choice != "0":
                 clubs_played_for.append(user_team["name"])

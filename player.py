@@ -19,16 +19,32 @@ class Player:
         self.age = 0
         self.career_length = 0
 
+        #desc = description
         self.pace = 0
+        self.pace_desc = ""
+
         self.shooting = 0
+        self.shooting_desc = ""
+
         self.chance_per_shot = 0
         self.passing = 0
+        self.passing_desc = ""
+
         self.dribbling = 0
+        self.dribbling_desc = ""
+
         self.defending = 0
+        self.defending_desc = ""
+
         self.strength = 0
+        self.strength_desc = ""
+
         self.iq = 0
+        self.iq_desc = ""
+
         self.playmaking_ability = 0
         self.height = 0
+        self.height_desc = ""
 
         self.match_goals = 0
         self.match_assists = 0
@@ -339,33 +355,52 @@ class Player:
         setattr(self,changed_stat, current) #changes the attribute rating by certain amount
         return changed_stat, amount
 
-    def get_attribute_description(self):
+    def stat_description(self):
         """
-        gives description of how well each of the user's attributes are.
-        :return:
+        gives description of how well the user's attributes are.
+        :return: None: adjusts class attributes by giving accurate description of the users stats
         """
 
         pace_desc = {1:"Can barely move", 2:"Snail", 3:"Mertesacker", 4:"Giroud",5:"Average",
                      6:"Above average",7:"Good",8:"Cristiano Ronaldo",9:"Kylian Mbappe",10:"Thierry Henry"}
+        self.pace_desc = pace_desc[self.pace]
 
         shooting_desc = {1:"Skies almost every shot", 2:"Trash", 3:"Gabriel penalty bad", 4:"Bad",5:"Average",
                      6:"Above average",7:"great",8:"Van Basten",9:"Prime Harry Kane",10:"Prime Cristiano Ronaldo"}
+        self.shooting_desc = shooting_desc[self.shooting]
 
         passing_desc = {1:"A child passes better", 2:"Disgustingly bad", 3:"Bad", 4:"Not very good",5:"Average",
                      6:"Above average",7:"Good",8:"Bruno Fernandes",9:"Prime Xavi",10:"Prime De Bruyne"}
 
+        self.passing_desc = passing_desc[self.passing]
+
         dribbling_desc = {1:"Two weak feet", 2:"Amateur level", 3:"garbage", 4:"Bad",5:"Average",
                      6:"Above average",7:"Good",8:"Pogba",9:"Prime Hazard",10:"Prime Messi"}
+        self.dribbling_desc = dribbling_desc[self.dribbling]
 
         defending_desc = {1:"Just watch everyone else defend", 2:"Mbappe (Not the trait you want to get from him)",
                           3:"21/22 Maguire", 4:"Not great",5:"Average", 6:"Above average",7:"Good",
                           8:"Very reliable",9:"Prime Van dijk",10:"Prime Maldini"}
+        self.defending_desc = defending_desc[self.defending]
 
         strength_desc = {1:"You struggle to fight the wind", 2:"Like a twig", 3:"Have you heard of a gym?", 4:"Weak",
                          5:"Average",6:"Above average",7:"Strong",8:"Lukaku",9:"Adama Traore",10:"AKINFENWA"}
+        self.strength_desc = strength_desc[self.strength]
 
         iq_desc = {1:"Like you're wearing a blindfold", 2:"Legally Blind", 3:"Not very smart", 4:"Get studying",
                    5:"Average", 6:"Above average",7:"Good",8:"Inzaghi",9:"Prime Messi",10:"Thomas Muller"}
+        self.iq_desc = iq_desc[self.iq]
+
+        if self.height < 168:
+            self.height_desc = "Short King"
+        elif self.height < 178:
+            self.height_desc = "Average"
+        elif self.height < 190:
+            self.height_desc = "Pretty tall"
+        elif self.height < 200:
+            self.height_desc = "Very tall"
+        else:
+            self.height_desc = "Giant"
 
     def check_highest(self):
         """
