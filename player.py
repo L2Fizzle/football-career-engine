@@ -28,6 +28,7 @@ class Player:
         self.strength = 0
         self.iq = 0
         self.playmaking_ability = 0
+        self.height = 0
 
         self.match_goals = 0
         self.match_assists = 0
@@ -81,6 +82,7 @@ class Player:
         self.strength = random.randint(1,10)
         self.iq = random.randint(1,10)
         self.playmaking_ability = round((self.passing + self.iq)/2)
+        self.height = random.randint(150,210)
 
         self.chance_per_shot = self.shooting * 0.03
         self.chance_per_created = self.playmaking_ability * 0.03 #chance of getting an assist per chance created
@@ -147,6 +149,8 @@ class Player:
 
     def display_iq(self):
         return self.iq
+    def display_height(self):
+        return self.height
 
     def display_season_goals(self):
         return self.season_goals
@@ -334,6 +338,34 @@ class Player:
             amount = -1
         setattr(self,changed_stat, current) #changes the attribute rating by certain amount
         return changed_stat, amount
+
+    def get_attribute_description(self):
+        """
+        gives description of how well each of the user's attributes are.
+        :return:
+        """
+
+        pace_desc = {1:"Can barely move", 2:"Snail", 3:"Mertesacker", 4:"Giroud",5:"Average",
+                     6:"Above average",7:"Good",8:"Cristiano Ronaldo",9:"Kylian Mbappe",10:"Thierry Henry"}
+
+        shooting_desc = {1:"Skies almost every shot", 2:"Trash", 3:"Gabriel penalty bad", 4:"Bad",5:"Average",
+                     6:"Above average",7:"great",8:"Van Basten",9:"Prime Harry Kane",10:"Prime Cristiano Ronaldo"}
+
+        passing_desc = {1:"A child passes better", 2:"Disgustingly bad", 3:"Bad", 4:"Not very good",5:"Average",
+                     6:"Above average",7:"Good",8:"Bruno Fernandes",9:"Prime Xavi",10:"Prime De Bruyne"}
+
+        dribbling_desc = {1:"Two weak feet", 2:"Amateur level", 3:"garbage", 4:"Bad",5:"Average",
+                     6:"Above average",7:"Good",8:"Pogba",9:"Prime Hazard",10:"Prime Messi"}
+
+        defending_desc = {1:"Just watch everyone else defend", 2:"Mbappe (Not the trait you want to get from him)",
+                          3:"21/22 Maguire", 4:"Not great",5:"Average", 6:"Above average",7:"Good",
+                          8:"Very reliable",9:"Prime Van dijk",10:"Prime Maldini"}
+
+        strength_desc = {1:"You struggle to fight the wind", 2:"Like a twig", 3:"Have you heard of a gym?", 4:"Weak",
+                         5:"Average",6:"Above average",7:"Strong",8:"Lukaku",9:"Adama Traore",10:"AKINFENWA"}
+
+        iq_desc = {1:"Like you're wearing a blindfold", 2:"Legally Blind", 3:"Not very smart", 4:"Get studying",
+                   5:"Average", 6:"Above average",7:"Good",8:"Inzaghi",9:"Prime Messi",10:"Thomas Muller"}
 
     def check_highest(self):
         """

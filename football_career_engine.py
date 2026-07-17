@@ -43,7 +43,8 @@ def show_initial_stats(player,team_name):
              ("Dribbling", player.display_dribbling()),
              ("Defending", player.display_defending()),
              ("Strength", player.display_strength()),
-             ("Football IQ", player.display_iq())]
+             ("Football IQ", player.display_iq()),
+             ("Height", player.display_height())]
 
 
     print("Generating player...")
@@ -56,11 +57,17 @@ def show_initial_stats(player,team_name):
             time.sleep(1)
             print(f"{value}")
             time.sleep(1)
-        else:
+        elif attribute == "Height":
             print(f"{attribute}: ",end="")
+            time.sleep(1)
+            print(f"{value}cm")
+            time.sleep(1)
+        else:
+            print(f"{attribute}: ", end="")
             time.sleep(1)
             print(f"{value} years")
             time.sleep(1)
+
 
 def show_stats(player):
     """
