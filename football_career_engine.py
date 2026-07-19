@@ -29,7 +29,7 @@ def enter_information(team_name):
 
 
 def choose_user_team(teams):
-    user_team = random.choice(teams)
+    user_team = teams[19]
 
     return user_team
 
@@ -119,7 +119,8 @@ def show_stats(player):
 
 
 def get_league_data(filename):
-    teams = []
+    prem_teams = [] #teams in premier league
+    efl_teams = [] #teams in english 2nd division
     with open(filename, "r") as file:
         lines = file.readlines()[1:]
         for line in lines:
@@ -130,9 +131,12 @@ def get_league_data(filename):
                     "defense":float(parts[2]),
                     "consistency":float(parts[3]),
                     "min_points":float(parts[4]),
-                    "max_points":float(parts[5])}
-            teams.append(team)
-    return teams
+                    "max_points":float(parts[5]),"league":str(parts[6])}
+            if team["league"] == "prem":
+                prem_teams.append(team)
+            else:
+                efl_teams.append(team)
+    return prem_teams,efl_teams
 
 
 def matchday_team(teams, teams_played):
@@ -334,6 +338,21 @@ def player_season(player):
 
     print(f"📋Average Rating: {player.season_rating:.1f}📋".center(100, " "))
 
+def team_lookup(teams):
+    """
+    returns full lookup for prem teams
+    :param teams: full list of teams
+    :return: full info of team
+    """
+    return {team["name"]:team for team in teams}
+
+def get_relegated_info(teams,relegated_teams):
+    lookup = team_lookup(teams)
+    full_info = []
+    for team in relegated_teams:
+        full_info.append(lookup[team])
+    return full_info
+
 
 def simulate_season(full_teams,player,user_team):
 
@@ -431,11 +450,14 @@ def simulate_season(full_teams,player,user_team):
     print(f"🏆{winner} are Premier League Champions!🏆 ".center(100, " "))
     print()
 
-    display_table(table)
+    relegated_teams = display_table(table)
+
 
     player.calculate_transfer_value()
 
     print(f"\n{player.display_name()} Transfer value: £{round(player.transfer_value,1)}M")
+
+    return relegated_teams
 
 
 def player_improvement(player):
@@ -538,35 +560,30 @@ def transfer_options(player,teams,min_value,max_value):
     #teams offering depends on player's season. Better season = better teams calling
     for team_offering in range(num_interested):
 
-        if player.season_rating >= 7.7 :
+        if player.season_rating >= 7.4:
             club = random.choice(elite_teams)
             price = ((int(random.triangular(min_value, max_value + 1, max_value)))/1000000)
             if club["name"] not in clubs_seen:
                 teams_offering.append([club, price])
                 clubs_seen.add(club["name"])
 
-        if player.season_rating >= 7.2:
+        if player.season_rating < 7.4:
             club = random.choice(mid_table_teams)
             price = ((int(random.randint(min_value, max_value + 1)))/1000000)
             if club["name"] not in clubs_seen:
                 teams_offering.append([club, price])
                 clubs_seen.add(club["name"])
 
-        if player.season_rating <= 7.6:
+        if player.season_rating <= 7.0:
             club_one = random.choice(mid_table_teams)
             price_one = ((int(random.randint(min_value, max_value + 1)))/1000000)
-            club_two = random.choice(lower_teams)
-            price_two = ((int(random.triangular(min_value, max_value + 1, min_value)))/1000000)
+
 
             if club_one["name"] not in clubs_seen:
                 teams_offering.append([club_one,price_one])
                 clubs_seen.add(club_one["name"])
 
-            if club_two["name"] not in clubs_seen:
-                teams_offering.append([club_two,price_two])
-                clubs_seen.add(club_two["name"])
-
-        if player.season_rating < 7.2:
+        if player.season_rating < 6.8:
             club = random.choice(lower_teams)
             price = ((int(random.triangular(min_value, max_value + 1, min_value))) / 1000000)
             if club["name"] not in clubs_seen:
@@ -602,8 +619,10 @@ def display_career_stats(player, clubs_played):
 
     print("⭐"*50)
 
-def choose_transfer(options):
+def choose_transfer(options,relegated):
     possible_choice = ["0","1","2","3","4","5","6","7"]
+    if relegated:
+        possible_choice.remove("0")
     num_of_options = len(options)
     print(f"\n{num_of_options} clubs want to sign you!")
     time.sleep(2)
@@ -612,7 +631,9 @@ def choose_transfer(options):
         time.sleep(2)
 
     while True:
-        print(f"\nEnter 0 to stay at your current club,",end="")
+        print("\nEnter ",end="")
+        if not relegated:
+            print(f"0 to stay at your current club,",end="")
 
         for option in range(num_of_options):
             print(f"   {option+1} to join {options[option][0]["name"]}",end="")
@@ -624,8 +645,40 @@ def choose_transfer(options):
         else:
             print("Please enter one of the following choices")
 
+def relegation_and_promotion(prem_teams,efl_teams,relegated_teams,user_team):
+    relegated = False
+    clubs_promoted = 0
+    print()
+    while clubs_promoted < 3:
+        promoted_club = random.choice(efl_teams)
+        print(f"{promoted_club["name"]} has been promoted")
+        efl_teams.remove(promoted_club)
+        prem_teams.append(promoted_club)
+        clubs_promoted += 1
+        time.sleep(0.5)
 
-def career(teams):
+    print()
+    for team in relegated_teams:
+
+        print(f"{team["name"]} has been Relegated")
+        time.sleep(0.5)
+        prem_teams.remove(team)
+        efl_teams.append(team)
+        if team == user_team:
+            relegated = True
+
+
+    return relegated
+
+
+
+def career(teams,efl_teams):
+    """
+    simulates entire player career and transfers
+    :param teams: dictionary containing all premier league teams
+    :param efl_teams: dictionary containing a select few efl teams that can get promoted and relegated
+    :return:
+    """
 
 
     prem_teams = teams.copy()
@@ -641,27 +694,28 @@ def career(teams):
     for season in range(career_length):
         actual_season_num = season+1
         print(f"\n🦁Season {actual_season_num}🦁")
-        simulate_season(prem_teams,player,user_team)
+        relegated_clubs = simulate_season(prem_teams,player,user_team)
+        prem_teams.append(user_team)
+        full_relegated_info = get_relegated_info(prem_teams,relegated_clubs)
+        user_relegated = relegation_and_promotion(prem_teams,efl_teams,full_relegated_info,user_team)
 
-        if actual_season_num % 3 == 0 and actual_season_num != career_length:
+        if (actual_season_num % 3 == 0 and actual_season_num != career_length) or user_relegated:
             options = transfer_options(player,prem_teams,player.min_value, player.max_value)
-            user_choice = choose_transfer(options)
+            user_choice = choose_transfer(options,user_relegated)
 
             if user_choice != "0":
+
                 user_team = options[int(user_choice)-1][0]
 
-
-
-            if user_choice != "0":
                 clubs_played_for.append(user_team["name"])
-                prem_teams = teams.copy()
-                prem_teams.remove(user_team)
+
             player_improvement(player)
             print(f"\nAttributes after season {actual_season_num}:")
             time.sleep(1)
             print(f"Team: {user_team["name"]}")
             show_stats(player)
 
+        prem_teams.remove(user_team)
         player.check_highest()
         player.clear_season_stats()
 
@@ -674,9 +728,9 @@ def career(teams):
 
 def main():
 
-    full_teams = get_league_data("PL_teams.txt")
+    prem_teams,efl_teams = get_league_data("PL_teams.txt")
 
-    career(full_teams)
+    career(prem_teams,efl_teams)
 
 
 if __name__ == "__main__":

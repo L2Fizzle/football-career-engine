@@ -28,9 +28,18 @@ def prem_table(unsorted_table):
     unsorted_table.sort(key=lambda team: (team["points"], team["goal_difference"]), reverse=True)
 
 def display_table(table):
+    """
+    displays full premier league table
+    :param table: the table in dictionary form
+    :return: relegated_teams: list of relegated teams (18th and below)
+    """
+    relegated_teams = []
     print(f"{"Position":<15} {"Team Name":<25}  {"Points":>8}{"GD":>10}")
     for position in range(0,20):
         actual_position = position + 1
         print(f"{actual_position:<15}", f"{str(table[position]["name"]):<25}{str(table[position]["points"]):>8}{str(table[position]["goal_difference"]):>12}")
+        if actual_position >= 18:
+            relegated_teams.append(table[position]["name"])
+    return relegated_teams
 
 
