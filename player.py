@@ -1,4 +1,5 @@
 import random
+import time
 
 POSITIONS_LIST = [
     "ST", "CF",
@@ -26,9 +27,10 @@ class Player:
         self.shooting = 0
         self.shooting_desc = ""
 
-        self.chance_per_shot = 0
+        self.chance_per_shot = 0 #chance of getting a goal per shot
         self.passing = 0
         self.passing_desc = ""
+        self.chance_per_created = 0 #chance of getting an assist per chance created
 
         self.dribbling = 0
         self.dribbling_desc = ""
@@ -238,7 +240,7 @@ class Player:
         assist_chance *= modifier
 
         # balances assist chance so it is not too extreme
-        chance = max(0.01, min(0.17, assist_chance))
+        assist_chance = max(0.01, min(0.17, assist_chance))
 
         if assist_chance >= random.random():
             self.match_assists += 1
@@ -453,7 +455,80 @@ class Player:
 
         self.min_value, self.max_value = min_value, max_value
 
+    def player_improvement(self):
+        """
+        Determines if a player improved or not after the season
+        :param : the user's player
+        :return: None: adjusts player rating in function
+        """
+        improved = random.choice([True, False])
+        print(f"\nDid {self.name} improve?", end=" ")
+        time.sleep(3)
 
+        if improved:
+            print("Yes")
+            time.sleep(2)
+            changes = random.randint(2, 4)
+            print("How many attributes:", end=" ")
+            time.sleep(1)
+            print(changes)
+            time.sleep(1)
+
+            while changes > 0:
+                amount = random.randint(1, 2)
+                attribute_improved, final_amount = self.change_player_stat(amount)
+
+                # checks if there is an attribute to be improved
+                if attribute_improved is not None:
+                    print(f"Attribute Improved: {attribute_improved} +{final_amount} ")
+                    time.sleep(2)
+                    changes -= 1
+
+                else:
+                    print("max reached for every stat")
+                    break
+
+        else:
+            print("No")
+            time.sleep(2)
+            self.player_downgrade()
+
+    def player_downgrade(self):
+        """
+        determines if the player downgrades in any attribute
+        :param:
+        :return:
+        """
+        worsened = random.choice([True, False])
+        print(f"\nDid {self.name} downgrade?", end=" ")
+
+        time.sleep(3)
+
+        if worsened:
+            print("Yes")
+            time.sleep(2)
+            changes = random.randint(2, 4)
+            print("How many attributes:", end=" ")
+            time.sleep(1)
+            print(changes)
+            time.sleep(1)
+
+            while changes > 0:
+                amount = random.randint(-3, -1)
+                attribute_downgraded, final_amount = self.change_player_stat(amount)
+
+                # checks if there is an attribute to be downgraded
+                if attribute_downgraded is not None:
+                    print(f"Attribute downgraded: {attribute_downgraded}  {final_amount}")
+                    time.sleep(2)
+                    changes -= 1
+
+                else:
+                    print("min reached for every stat")
+                    break
+        else:
+            print("No")
+            time.sleep(2)
 
     def calculate_career_rating(self):
         average_career_rating = self.career_rating/(38*self.career_length)
