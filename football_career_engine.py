@@ -9,6 +9,11 @@ from Prem_table import display_table
 
 
 def enter_information(team_name):
+    """
+    allows user to enter their name and generates their attributes
+    :param team_name: name for user's team (randomly chosen)
+    :return: player,player.display_career_length()(tuple): contains the player's information and their career length
+    """
     while True:
         player_name = input("Enter your player's name: ").strip()
 
@@ -29,7 +34,12 @@ def enter_information(team_name):
 
 
 def choose_user_team(teams):
-    user_team = teams[19]
+    """
+    randomly chooses user's team based on the premier league teams for that season
+    :param teams: list containing all premier league teams
+    :return: user_team(dict): contains users team's information
+    """
+    user_team = random.choice(teams)
 
     return user_team
 
@@ -119,6 +129,11 @@ def show_stats(player):
 
 
 def get_league_data(filename):
+    """
+    Retrieves data from PL teams txt file
+    :param filename: name of league txt file
+    :return: prem_teams,elf_teams: two lists containing information about premier league teams and efl teams for future use
+    """
     prem_teams = [] #teams in premier league
     efl_teams = [] #teams in english 2nd division
     with open(filename, "r") as file:
@@ -140,6 +155,13 @@ def get_league_data(filename):
 
 
 def matchday_team(teams, teams_played):
+    """
+    randomly chooses team to play
+    Once the team is played, they cannot be played again until every team is played (later on)
+    :param teams: list of every team that can be played. Used to be removed once played
+    :param teams_played(list): list of every team played to be appended.
+    :return: team: the team that the user will play against
+    """
     team = random.choice(teams)
     teams.remove(team)
     teams_played.append(team)
