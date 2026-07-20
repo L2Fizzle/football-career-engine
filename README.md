@@ -217,30 +217,33 @@ python football_career_engine.py
 # Example Output
 
 ### Player Generation
+<img width="2040" height="976" alt="3  Lab 3 py – football_career_engine_README md 2026-07-20 12_38_02 AM" src="https://github.com/user-attachments/assets/0b359fd1-525c-48ac-a0b2-9839874aabfb" />
 
-![3. Lab 3.py – football_career_engine_README.md 2026-07-20 12_38_02 AM.png](..%2F..%2F..%2FVideos%2FCaptures%2F3.%20Lab%203.py%20%E2%80%93%20football_career_engine_README.md%202026-07-20%2012_38_02%20AM.png)
 ---
 
 ### Match Simulation
 
-![3. Lab 3.py – football_career_engine_README.md 2026-07-20 12_38_37 AM.png](..%2F..%2F..%2FVideos%2FCaptures%2F3.%20Lab%203.py%20%E2%80%93%20football_career_engine_README.md%202026-07-20%2012_38_37%20AM.png)
+<img width="1937" height="1005" alt="3  Lab 3 py – football_career_engine_README md 2026-07-20 12_38_37 AM" src="https://github.com/user-attachments/assets/0c8d6f33-62c3-4084-9a99-0c6d9fb579c8" />
+
 ---
 
 ### End of Season
 
-![3. Lab 3.py – football_career_engine_README.md 2026-07-20 12_39_03 AM.png](..%2F..%2F..%2FVideos%2FCaptures%2F3.%20Lab%203.py%20%E2%80%93%20football_career_engine_README.md%202026-07-20%2012_39_03%20AM.png)
-![3. Lab 3.py – football_career_engine_README.md 2026-07-20 12_39_11 AM.png](..%2F..%2F..%2FVideos%2FCaptures%2F3.%20Lab%203.py%20%E2%80%93%20football_career_engine_README.md%202026-07-20%2012_39_11%20AM.png)
+<img width="1954" height="1000" alt="3  Lab 3 py – football_career_engine_README md 2026-07-20 12_39_03 AM" src="https://github.com/user-attachments/assets/ad4b12b9-60dd-43ac-801a-8f63d2157754" />
+<img width="1862" height="637" alt="3  Lab 3 py – football_career_engine_README md 2026-07-20 12_39_11 AM" src="https://github.com/user-attachments/assets/de295924-18e1-4e1b-b987-9b71fb363bb7" />
+
 ---
 
 ### Transfer Options and player improvement
 
-![3. Lab 3.py – football_career_engine_README.md 2026-07-20 12_41_25 AM.png](..%2F..%2F..%2FVideos%2FCaptures%2F3.%20Lab%203.py%20%E2%80%93%20football_career_engine_README.md%202026-07-20%2012_41_25%20AM.png)
+<img width="1835" height="170" alt="3  Lab 3 py – football_career_engine_README md 2026-07-20 12_41_25 AM" src="https://github.com/user-attachments/assets/c1f3f50f-3dfd-415b-95c1-028d7f2041da" />
+<img width="1915" height="595" alt="3  Lab 3 py – football_career_engine_README md 2026-07-20 12_44_23 AM" src="https://github.com/user-attachments/assets/9b0745b8-f867-4624-9829-97ab448a2818" />
 
 ---
 
 ### Career Summary
 
-![3. Lab 3.py – football_career_engine_README.md 2026-07-20 12_47_38 AM.png](..%2F..%2F..%2FVideos%2FCaptures%2F3.%20Lab%203.py%20%E2%80%93%20football_career_engine_README.md%202026-07-20%2012_47_38%20AM.png)
+<img width="1639" height="563" alt="3  Lab 3 py – football_career_engine_README md 2026-07-20 12_47_38 AM" src="https://github.com/user-attachments/assets/4526a81b-5dd3-47df-a5a0-2b0e79bbd1e3" />
 
 ---
 
