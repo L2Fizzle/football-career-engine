@@ -63,6 +63,20 @@ class Player:
         self.season_rating = 0
         self.season_titles = 0
 
+        #number of seasons the user played in the ucl, and how many they won
+        self.ucl_seasons = 0
+        self.ucl_titles = 0
+
+        #number of seasons the user played in the europa league, and how many they won
+        self.europa_seasons = 0
+        self.europa_titles = 0
+
+        #number of seasons the user played in the conference league, and how many they won
+        self.conf_seasons = 0
+        self.conf_titles = 0
+
+
+
 
 
         self.transfer_value = 0 #transfer value in Millions
@@ -529,6 +543,39 @@ class Player:
         else:
             print("No")
             time.sleep(2)
+
+    def european_success(self):
+        """
+        determines user's european success using the number of seasons they qualified for the competition
+        :param
+        :return:
+        """
+
+        while self.ucl_seasons > 0:
+            odds = 12
+            won = random.randint(1, 100)
+            if odds >= won:
+                self.ucl_titles += 1
+
+            self.ucl_seasons -= 1
+
+        while self.europa_seasons > 0:
+
+            odds = 40
+            won = random.randint(1, 100)
+            if odds >= won:
+                self.europa_titles += 1
+
+            self.europa_seasons -= 1
+
+        while self.conf_seasons > 0:
+
+            odds = 80
+            won = random.randint(1, 100)
+            if odds >= won:
+                self.conf_titles += 1
+
+            self.conf_seasons -= 1
 
     def calculate_career_rating(self):
         average_career_rating = self.career_rating/(38*self.career_length)

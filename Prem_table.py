@@ -26,19 +26,35 @@ def prem_table(unsorted_table):
     """
     unsorted_table.sort(key=lambda team: (team["points"], team["goal_difference"]), reverse=True)
 
-def display_table(table):
+def display_table(table,user_team):
     """
     displays full premier league table
     :param table: the table in dictionary form
+    :param user_team: the user's team. Used to obtain position
     :return: relegated_teams: list of relegated teams (18th and below)
     """
     relegated_teams = []
+    user_position = 0
     print(f"{"Position":<15} {"Team Name":<25}  {"Points":>8}{"GD":>10}")
     for position in range(0,20):
         actual_position = position + 1
-        print(f"{actual_position:<15}", f"{str(table[position]["name"]):<25}{str(table[position]["points"]):>8}{str(table[position]["goal_difference"]):>12}")
-        if actual_position >= 18:
+        if actual_position <= 5:
+            print(f"🔵{actual_position:<15}", f"{str(table[position]["name"]):<25}{str(table[position]["points"]):>8}{str(table[position]["goal_difference"]):>12}")
+        elif actual_position <= 7:
+            print(f"🔶{actual_position:<15}",
+                  f"{str(table[position]["name"]):<25}{str(table[position]["points"]):>8}{str(table[position]["goal_difference"]):>12}")
+        elif actual_position == 8:
+            print(f"📗{actual_position:<15}", f"{str(table[position]["name"]):<25}{str(table[position]["points"]):>8}{str(table[position]["goal_difference"]):>12}")
+        elif actual_position >= 18:
+            print(f"🔴{actual_position:<15}", f"{str(table[position]["name"]):<25}{str(table[position]["points"]):>8}{str(table[position]["goal_difference"]):>12}")
             relegated_teams.append(table[position]["name"])
-    return relegated_teams
+
+        else:
+            print(f"  {actual_position:<15}", f"{str(table[position]["name"]):<25}{str(table[position]["points"]):>8}{str(table[position]["goal_difference"]):>12}")
+        if table[position]["name"] == user_team["name"]:
+            user_position = actual_position
+    print("🔵 Champions League group stage    🔶Europa League group stage    📗Conference League group stage    🔴Relegation")
+
+    return relegated_teams,user_position
 
 

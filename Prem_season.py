@@ -2,9 +2,7 @@ import random
 import time
 import math
 
-from Prem_table import points_calculation
-from Prem_table import prem_table
-from Prem_table import display_table
+import Prem_table
 
 def simulation_speed():
     """
@@ -243,6 +241,14 @@ def get_relegated_info(teams,relegated_teams):
     return full_info
 
 def relegation_and_promotion(prem_teams,efl_teams,relegated_teams,user_team):
+    """
+    removes relegated clubs from premier league and randomly chooses three championship clubs to be promoted
+    :param prem_teams: list containing all premier league teams
+    :param efl_teams: list containing most probable clubs to be promoted from efl championshio
+    :param relegated_teams: teams that finished 18th or below
+    :param user_team: the user's team
+    :return: None: prints promoted teams and adjusts lists
+    """
     relegated = False
     clubs_promoted = 0
     print()
@@ -257,7 +263,6 @@ def relegation_and_promotion(prem_teams,efl_teams,relegated_teams,user_team):
     print()
     for team in relegated_teams:
 
-        print(f"{team["name"]} has been Relegated")
         time.sleep(0.5)
         prem_teams.remove(team)
         efl_teams.append(team)
@@ -280,12 +285,31 @@ def season_table(teams, user_team,user_team_points,user_team_gd):
     for prem_team in teams:
         min_points = prem_team["min_points"]
         max_points = prem_team["max_points"]
-        team_points, team_goal_difference = points_calculation(min_points,max_points)
+        team_points, team_goal_difference = Prem_table.points_calculation(min_points,max_points)
         teams_and_points.append({"name": prem_team["name"], "points": team_points, "goal_difference": team_goal_difference})
     teams_and_points.append({"name": f"{user_team["name"]}", "points": user_team_points, "goal_difference": user_team_gd})
 
-    prem_table(teams_and_points)
+    Prem_table.prem_table(teams_and_points)
     return teams_and_points
+
+def european_qualification(player, user_position):
+    """
+    determines if the user's team qualified for any european competitions
+    :param player: user's player
+    :param user_position: position of user team in the table
+    :return: None: changes competition for player next season
+    """
+
+    if user_position <= 5:
+        player.ucl_seasons += 1
+        return "Champions League"
+    elif user_position <= 7:
+        player.europa_seasons += 1
+        return "Europa League"
+    elif user_position == 8:
+        player.conf_seasons += 1
+        return "Conference League"
+    return None
 
 def simulate_season(full_teams,player,user_team):
     """
@@ -391,11 +415,14 @@ def simulate_season(full_teams,player,user_team):
     print(f"🏆{winner} are Premier League Champions!🏆 ".center(100, " "))
     print()
 
-    relegated_teams = display_table(table)
+    relegated_teams,user_position = Prem_table.display_table(table,user_team)
 
+    competition = european_qualification(player,user_position) #checks if user qualified for any european competitions
+
+    if competition is not None:
+        print(f"\n{team_name} qualified for {competition}!")
 
     player.calculate_transfer_value()
 
-    print(f"\n{player.display_name()} Transfer value: £{round(player.transfer_value,1)}M")
 
     return relegated_teams

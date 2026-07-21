@@ -143,7 +143,7 @@ def get_league_data(filename):
                     "defense":float(parts[2]),
                     "consistency":float(parts[3]),
                     "min_points":float(parts[4]),
-                    "max_points":float(parts[5]),"league":str(parts[6])}
+                    "max_points":float(parts[5]),"league":str(parts[6]),"european_reputation":float(parts[7])}
             if team["league"] == "prem":
                 prem_teams.append(team)
             else:
@@ -218,17 +218,28 @@ def display_career_stats(player, clubs_played):
     print()
 
     played_for = ",".join(clubs_played)
-    print(f"Clubs Played for: {played_for}".center(100, " "))
+    print(f"Clubs Played for: {played_for}".center(102, " "))
     print(f"👕{player.career_length*38} appearances👕".center(100, " "))
     print(f"⚽Career Goals: {player.career_goals}⚽".center(100, " "))
     print(f"🎯Career Assists: {player.career_assists}🎯".center(100, " "))
     print(f"💪Career Clean Sheets: {player.career_clean_sheets}💪".center(100, " "))
-    print(f"🏆Premier League Titles won: {player.prem_titles}🏆".center(100," "))
     print()
 
     print(f"⚽Most Goals in a Season: {player.highest_goals}⚽".center(100, " "))
     print(f"🎯Most Assists in a Season: {player.highest_assists}🎯".center(100, " "))
     print(f"🏆Highest Transfer Value: £{player.highest_value}M🏆".center(100, " "),"\n")
+
+    print(" Trophy Cabinet".center(100," "))
+    print()
+    print(f"🏆Premier League Titles won: {player.prem_titles}🏆".center(100," "))
+    print(f"🏆Champions League Titles won: {player.ucl_titles}🏆".center(100," "))
+    print(f"🏆Europa League Titles won: {player.europa_titles}🏆".center(100," "))
+    print(f"🏆Conference League Titles won: {player.ucl_titles}🏆".center(100," "))
+
+    print()
+    print(f"Career Rating: {round(player.calculate_career_rating(),1)}".center(100," "))
+    print()
+
 
     print("⭐"*50)
 
@@ -260,6 +271,7 @@ def choose_transfer(options,relegated):
             print("Please enter one of the following choices")
 
 
+
 def career(teams,efl_teams):
     """
     simulates entire player career and transfers
@@ -285,6 +297,7 @@ def career(teams,efl_teams):
         prem_teams.append(user_team)
         full_relegated_info = Prem_season.get_relegated_info(prem_teams,relegated_clubs)
         user_relegated = Prem_season.relegation_and_promotion(prem_teams,efl_teams,full_relegated_info,user_team)
+        print(f"\n{player.display_name()} Transfer value: £{round(player.transfer_value, 1)}M")
 
         if (actual_season_num % 3 == 0 and actual_season_num != career_length) or user_relegated:
             options = transfer_options(player,prem_teams,player.min_value, player.max_value)
@@ -308,6 +321,7 @@ def career(teams,efl_teams):
 
 
     time.sleep(2)
+    player.european_success()
     display_career_stats(player,clubs_played_for)
 
 def main():
