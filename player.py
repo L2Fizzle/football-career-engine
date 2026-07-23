@@ -1,5 +1,6 @@
 import random
 import time
+import math
 
 POSITIONS_LIST = [
     "ST", "CF",
@@ -66,17 +67,17 @@ class Player:
         #number of seasons the user played in the ucl, and how many they won
         self.ucl_seasons = 0
         self.ucl_titles = 0
+        self.ucl_goals = 0
 
         #number of seasons the user played in the europa league, and how many they won
         self.europa_seasons = 0
+        self.europa_goals = 0
         self.europa_titles = 0
 
         #number of seasons the user played in the conference league, and how many they won
         self.conf_seasons = 0
+        self.conf_goals = 0
         self.conf_titles = 0
-
-
-
 
 
         self.transfer_value = 0 #transfer value in Millions
@@ -85,6 +86,7 @@ class Player:
         self.max_value = 0
 
         self.career_goals = 0
+        self.prem_goals = 0
         self.career_assists = 0
         self.career_clean_sheets = 0
         self.career_rating = 6.0
@@ -104,7 +106,7 @@ class Player:
         self.position = random.choice(POSITIONS_LIST)
 
         self.age = random.randint(15,20)
-        self.career_length = random.randint(15,25)
+        self.career_length = 5
 
         self.pace = random.randint(1,10)
         self.shooting = random.randint(1,10)
@@ -242,6 +244,7 @@ class Player:
         if chance >= random.random():
             self.match_goals += 1
             self.season_goals += 1
+            self.prem_goals += 1
             self.career_goals += 1
 
     def key_pass(self, opponent_defense,team_offence):
@@ -543,6 +546,19 @@ class Player:
         else:
             print("No")
             time.sleep(2)
+    def european_goals(self):
+
+        for season in range(self.ucl_seasons):
+            self.ucl_goals += random.randint(max((self.shooting-2),0),math.floor(self.shooting*1.8))
+
+        for season in range(self.europa_seasons):
+            self.europa_goals += random.randint(max((self.shooting-2),0),math.floor(self.shooting*1.8))
+
+        for season in range(self.conf_seasons):
+            self.conf_goals += random.randint(max((self.shooting-2),0),math.floor(self.shooting*1.8))
+
+        self.career_goals += (self.ucl_goals+self.europa_goals+self.conf_goals)
+
 
     def european_success(self):
         """
@@ -550,32 +566,37 @@ class Player:
         :param
         :return:
         """
+        self.european_goals()
 
-        while self.ucl_seasons > 0:
+        ucl_seasons = self.ucl_seasons
+        europa_seasons = self.europa_seasons
+        conf_seasons = self.conf_seasons
+
+        while ucl_seasons > 0:
             odds = 12
             won = random.randint(1, 100)
             if odds >= won:
                 self.ucl_titles += 1
 
-            self.ucl_seasons -= 1
+            ucl_seasons -= 1
 
-        while self.europa_seasons > 0:
+        while europa_seasons > 0:
 
             odds = 40
             won = random.randint(1, 100)
             if odds >= won:
                 self.europa_titles += 1
 
-            self.europa_seasons -= 1
+            europa_seasons -= 1
 
-        while self.conf_seasons > 0:
+        while conf_seasons > 0:
 
             odds = 80
             won = random.randint(1, 100)
             if odds >= won:
                 self.conf_titles += 1
 
-            self.conf_seasons -= 1
+            conf_seasons -= 1
 
     def calculate_career_rating(self):
         average_career_rating = self.career_rating/(38*self.career_length)

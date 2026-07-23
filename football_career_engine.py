@@ -220,7 +220,7 @@ def display_career_stats(player, clubs_played):
     played_for = ",".join(clubs_played)
     print(f"Clubs Played for: {played_for}".center(102, " "))
     print(f"👕{player.career_length*38} appearances👕".center(100, " "))
-    print(f"⚽Career Goals: {player.career_goals}⚽".center(100, " "))
+    print(f"⚽Premier League Goals: {player.prem_goals}⚽".center(100, " "))
     print(f"🎯Career Assists: {player.career_assists}🎯".center(100, " "))
     print(f"💪Career Clean Sheets: {player.career_clean_sheets}💪".center(100, " "))
     print()
@@ -229,14 +229,26 @@ def display_career_stats(player, clubs_played):
     print(f"🎯Most Assists in a Season: {player.highest_assists}🎯".center(100, " "))
     print(f"🏆Highest Transfer Value: £{player.highest_value}M🏆".center(100, " "),"\n")
 
+    print(" European Competitions".center(100," "))
+    print(f"Seasons in the Champions League: {player.ucl_seasons}🏆".center(100," "))
+    print(f"⚽UCL Goals: {player.ucl_goals}⚽".center(100, " "))
+    print(f"Seasons in the Europa League: {player.europa_seasons}🏆".center(100," "))
+    print(f"⚽Europa League Goals: {player.europa_goals}⚽".center(100, " "))
+    print(f"Seasons in the Conference League: {player.conf_titles}🏆".center(100," "))
+    print(f"⚽Conference League Goals: {player.conf_goals}⚽".center(100, " "))
+    print()
+
+
+
     print(" Trophy Cabinet".center(100," "))
     print()
     print(f"🏆Premier League Titles won: {player.prem_titles}🏆".center(100," "))
     print(f"🏆Champions League Titles won: {player.ucl_titles}🏆".center(100," "))
     print(f"🏆Europa League Titles won: {player.europa_titles}🏆".center(100," "))
-    print(f"🏆Conference League Titles won: {player.ucl_titles}🏆".center(100," "))
+    print(f"🏆Conference League Titles won: {player.conf_titles}🏆".center(100," "))
 
     print()
+    print(f"⚽Career Goals: {player.career_goals}⚽".center(100," "))
     print(f"Career Rating: {round(player.calculate_career_rating(),1)}".center(100," "))
     print()
 
