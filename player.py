@@ -72,15 +72,19 @@ class Player:
         self.ucl_seasons = 0
         self.ucl_titles = 0
         self.ucl_goals = 0
+        self.ucl_assists = 0
 
         #number of seasons the user played in the europa league, and how many they won
         self.europa_seasons = 0
         self.europa_goals = 0
+        self.europa_assists = 0
+
         self.europa_titles = 0
 
         #number of seasons the user played in the conference league, and how many they won
         self.conf_seasons = 0
         self.conf_goals = 0
+        self.conf_assists = 0
         self.conf_titles = 0
 
 
@@ -91,6 +95,7 @@ class Player:
 
         self.career_goals = 0
         self.prem_goals = 0
+        self.prem_assists = 0
         self.career_assists = 0
         self.career_clean_sheets = 0
         self.career_rating = 6.0
@@ -110,7 +115,7 @@ class Player:
         self.position = random.choice(POSITIONS_LIST)
 
         self.age = random.randint(15,20)
-        self.career_length = 5
+        self.career_length = random.randint(15,23)
 
         self.pace = random.randint(1,10)
         if self.position in ATTACKER_LIST:
@@ -129,7 +134,7 @@ class Player:
         elif self.position in MIDFIELDER_LIST:
             self.defending = random.randint(2, 9)
         else:
-            self.shooting = random.randint(3,10)
+            self.defending = random.randint(3,10)
 
         self.strength = random.randint(1,10)
         self.iq = random.randint(1,10)
@@ -138,8 +143,8 @@ class Player:
         self.playmaking_ability = round((self.passing + self.iq)/2)
         self.height = random.randint(150,210)
 
-        self.chance_per_shot = self.attacking_ability * 0.03
-        self.chance_per_created = self.playmaking_ability * 0.03 #chance of getting an assist per chance created
+        self.chance_per_shot = self.attacking_ability * 0.045
+        self.chance_per_created = self.playmaking_ability * 0.04 #chance of getting an assist per chance created
 
     def display_name(self):
         """
@@ -282,6 +287,7 @@ class Player:
         if assist_chance >= random.random():
             self.match_assists += 1
             self.season_assists += 1
+            self.prem_assists += 1
             self.career_assists += 1
 
 
@@ -324,7 +330,7 @@ class Player:
     def dribble_attempt(self, opponent_defense):
         dribble_chance = self.dribbling - (opponent_defense / 2)
 
-        successful_dribble_odds = random.randint(10 - self.dribbling, 10)
+        successful_dribble_odds = random.randint(0, 10)
 
         if dribble_chance >= successful_dribble_odds:
             self.match_dribbles += 1
@@ -463,13 +469,13 @@ class Player:
         """
         min_value = 0
         max_value = 0
-        if self.season_rating >= 8.5:
+        if self.season_rating >= 8.2:
             min_value += 100000000
-        elif self.season_rating >= 8.0:
-            min_value += 70000000
         elif self.season_rating >= 7.5:
+            min_value += 70000000
+        elif self.season_rating >= 7.1:
             min_value += 50000000
-        elif self.season_rating >= 7.0:
+        elif self.season_rating >= 6.8:
             min_value += 30000000
         else:
             min_value += 10000000
@@ -566,18 +572,28 @@ class Player:
         else:
             print("No")
             time.sleep(2)
-    def european_goals(self):
+    def european_GA(self):
+        """
+        determines the number of european goals and asssist based on the user's attributes
+        :return: Changes attributes in place
+        """
 
         for season in range(self.ucl_seasons):
             self.ucl_goals += random.randint(max((self.attacking_ability-2),0),math.floor(self.attacking_ability*1.8))
+            self.ucl_assists += random.randint(max(self.playmaking_ability-4,0),self.playmaking_ability)
 
         for season in range(self.europa_seasons):
             self.europa_goals += random.randint(max((self.attacking_ability-2),0),math.floor(self.attacking_ability*1.8))
+            self.europa_assists += random.randint(max(self.playmaking_ability-4,0),self.playmaking_ability)
+
 
         for season in range(self.conf_seasons):
             self.conf_goals += random.randint(max((self.attacking_ability-2),0),math.floor(self.attacking_ability*1.8))
+            self.conf_assists += random.randint(max(self.playmaking_ability-4,0),self.playmaking_ability)
 
-        self.career_goals += (self.ucl_goals+self.europa_goals+self.conf_goals)
+
+        self.career_goals += self.ucl_goals+self.europa_goals+self.conf_goals
+        self.career_assists += self.ucl_assists + self.europa_assists + self.conf_assists
 
 
     def european_success(self):
@@ -586,7 +602,7 @@ class Player:
         :param
         :return:
         """
-        self.european_goals()
+        self.european_GA()
 
         ucl_seasons = self.ucl_seasons
         europa_seasons = self.europa_seasons

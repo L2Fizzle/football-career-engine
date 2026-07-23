@@ -221,7 +221,7 @@ def display_career_stats(player, clubs_played):
     print(f"Clubs Played for: {played_for}".center(102, " "))
     print(f"👕{player.career_length*38} appearances👕".center(100, " "))
     print(f"⚽Premier League Goals: {player.prem_goals}⚽".center(100, " "))
-    print(f"🎯Career Assists: {player.career_assists}🎯".center(100, " "))
+    print(f"🎯Premier League Assists: {player.prem_assists}🎯".center(100, " "))
     print(f"💪Career Clean Sheets: {player.career_clean_sheets}💪".center(100, " "))
     print()
 
@@ -230,17 +230,39 @@ def display_career_stats(player, clubs_played):
     print(f"🏆Highest Transfer Value: £{player.highest_value}M🏆".center(100, " "),"\n")
 
     print(" European Competitions".center(100," "))
-    print(f"Seasons in the Champions League: {player.ucl_seasons}🏆".center(100," "))
-    print(f"⚽UCL Goals: {player.ucl_goals}⚽".center(100, " "))
-    print(f"Seasons in the Europa League: {player.europa_seasons}🏆".center(100," "))
-    print(f"⚽Europa League Goals: {player.europa_goals}⚽".center(100, " "))
-    print(f"Seasons in the Conference League: {player.conf_titles}🏆".center(100," "))
-    print(f"⚽Conference League Goals: {player.conf_goals}⚽".center(100, " "))
+    time.sleep(1)
     print()
+    print(f"Seasons in the Champions League: {player.ucl_seasons}".center(100," "))
+    time.sleep(2)
+    print(f"⚽UCL Goals: {player.ucl_goals}⚽".center(100, " "))
+    time.sleep(2)
+    print(f"🎯UCL Assists: {player.ucl_assists}🎯".center(100, " "))
+    time.sleep(1)
+    print()
+
+    print(f"Seasons in the Europa League: {player.europa_seasons}".center(100," "))
+    time.sleep(2)
+    print(f"⚽Europa League Goals: {player.europa_goals}⚽".center(100, " "))
+    time.sleep(2)
+    print(f"🎯Europa League Assists: {player.europa_assists}🎯".center(100, " "))
+    time.sleep(1)
+    print()
+    print(f"Seasons in the Conference League: {player.conf_seasons}".center(100," "))
+    time.sleep(2)
+
+    print(f"⚽Conference League Goals: {player.conf_goals}⚽".center(100, " "))
+    time.sleep(2)
+
+    print(f"🎯Conference League Assists: {player.conf_assists}🎯".center(100, " "))
+
+
+    print()
+    time.sleep(1)
 
 
 
     print(" Trophy Cabinet".center(100," "))
+    time.sleep(1)
     print()
     print(f"🏆Premier League Titles won: {player.prem_titles}🏆".center(100," "))
     print(f"🏆Champions League Titles won: {player.ucl_titles}🏆".center(100," "))
@@ -248,7 +270,9 @@ def display_career_stats(player, clubs_played):
     print(f"🏆Conference League Titles won: {player.conf_titles}🏆".center(100," "))
 
     print()
+    time.sleep(2)
     print(f"⚽Career Goals: {player.career_goals}⚽".center(100," "))
+    print(f"🎯Career Assists: {player.career_assists}🎯".center(100, " "))
     print(f"Career Rating: {round(player.calculate_career_rating(),1)}".center(100," "))
     print()
 
@@ -310,6 +334,7 @@ def career(teams,efl_teams):
         full_relegated_info = Prem_season.get_relegated_info(prem_teams,relegated_clubs)
         user_relegated = Prem_season.relegation_and_promotion(prem_teams,efl_teams,full_relegated_info,user_team)
         print(f"\n{player.display_name()} Transfer value: £{round(player.transfer_value, 1)}M")
+
 
         if (actual_season_num % 3 == 0 and actual_season_num != career_length) or user_relegated:
             options = transfer_options(player,prem_teams,player.min_value, player.max_value)
