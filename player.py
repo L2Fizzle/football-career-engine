@@ -10,6 +10,9 @@ POSITIONS_LIST = [
     "LWB", "RWB",
     "LB", "RB",
     "CB"]
+ATTACKER_LIST = ["ST", "CF", "LW", "RW"]
+MIDFIELDER_LIST = ["LM", "RM","CAM", "CM","CDM"]
+DEFENDER_LIST = ["LWB", "RWB","LB", "RB","CB"]
 
 class Player:
 
@@ -46,6 +49,7 @@ class Player:
         self.iq_desc = ""
 
         self.playmaking_ability = 0
+        self.attacking_ability = 0
         self.height = 0
         self.height_desc = ""
 
@@ -109,16 +113,32 @@ class Player:
         self.career_length = 5
 
         self.pace = random.randint(1,10)
-        self.shooting = random.randint(1,10)
+        if self.position in ATTACKER_LIST:
+            self.shooting = random.randint(3,10)
+        elif self.position in MIDFIELDER_LIST:
+            self.shooting = random.randint(2,9)
+        else:
+            self.shooting = random.randint(1,7)
+
+
         self.passing = random.randint(1,10)
         self.dribbling = random.randint(1,10)
-        self.defending = random.randint(1,10)
+
+        if self.position in ATTACKER_LIST:
+            self.defending = random.randint(1, 7)
+        elif self.position in MIDFIELDER_LIST:
+            self.defending = random.randint(2, 9)
+        else:
+            self.shooting = random.randint(3,10)
+
         self.strength = random.randint(1,10)
         self.iq = random.randint(1,10)
+
+        self.attacking_ability = round((self.shooting + self.iq)/2)
         self.playmaking_ability = round((self.passing + self.iq)/2)
         self.height = random.randint(150,210)
 
-        self.chance_per_shot = self.shooting * 0.03
+        self.chance_per_shot = self.attacking_ability * 0.03
         self.chance_per_created = self.playmaking_ability * 0.03 #chance of getting an assist per chance created
 
     def display_name(self):
@@ -549,13 +569,13 @@ class Player:
     def european_goals(self):
 
         for season in range(self.ucl_seasons):
-            self.ucl_goals += random.randint(max((self.shooting-2),0),math.floor(self.shooting*1.8))
+            self.ucl_goals += random.randint(max((self.attacking_ability-2),0),math.floor(self.attacking_ability*1.8))
 
         for season in range(self.europa_seasons):
-            self.europa_goals += random.randint(max((self.shooting-2),0),math.floor(self.shooting*1.8))
+            self.europa_goals += random.randint(max((self.attacking_ability-2),0),math.floor(self.attacking_ability*1.8))
 
         for season in range(self.conf_seasons):
-            self.conf_goals += random.randint(max((self.shooting-2),0),math.floor(self.shooting*1.8))
+            self.conf_goals += random.randint(max((self.attacking_ability-2),0),math.floor(self.attacking_ability*1.8))
 
         self.career_goals += (self.ucl_goals+self.europa_goals+self.conf_goals)
 
