@@ -112,7 +112,7 @@ class Player:
         :return:
         """
 
-        self.position = random.choice(DEFENDER_LIST)
+        self.position = random.choice(POSITIONS_LIST)
 
         self.age = random.randint(15,20)
         self.career_length = random.randint(15,23)
@@ -256,13 +256,37 @@ class Player:
         self.max_value = 0
 
     def defensive_contribution(self,team):
-        team["defense"] += self.defending/10
+        """
+        adjusts user team's defense based on user's defensive stat (only for defenders)
+        :param team: user's team
+        :return:
+        """
+        team_defense = team["defense"]
+        defense_modifier = (self.defending - 5)*0.2
+        if defense_modifier + team_defense > 10:
+            team["defense"] = 10.0
+        else:
+            team["defense"] += defense_modifier
 
     def reset_defensive_contribution(self,team):
-        team["defense"] -= self.defending/10
+        """
+        resets user team's defense rating
+        used when user transfers
+        :param team: user's team
+        :return:
+        """
+        defense_modifier = (self.defending - 5)*0.2
+        team["defense"] -= defense_modifier
 
 
     def shot_attempt(self,opponent_defense,team_offence):
+        """
+        simulates shot attempt and determines if it results in a goal
+        uses the users attacking stats and team ratings to determine the chance of a goal
+        :param opponent_defense: the opponent's defense rating
+        :param team_offence: user team's offence level
+        :return:
+        """
         chance = self.chance_per_shot
 
         modifier = 1

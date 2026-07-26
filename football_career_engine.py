@@ -151,7 +151,7 @@ def get_league_data(filename):
     return prem_teams,efl_teams
 
 
-def transfer_options(player,teams,min_value,max_value):
+def transfer_options(player,teams,min_value,max_value,user_team):
     """
     provides options for player to transfer to depending on their average rating for the season.
     Also provides transfer offer based on player's transfer value
@@ -159,6 +159,7 @@ def transfer_options(player,teams,min_value,max_value):
     :param teams: every team in the league
     :param min_value: minimum transfer value of player
     :param max_value: maximum transfer value of player
+    :param user_team: the user's team (used to make sure they don't offer)
     :return: teams_offering(list): list of the teams offering a transfer
     """
     elite_teams = teams[0:5]
@@ -176,30 +177,30 @@ def transfer_options(player,teams,min_value,max_value):
         if player.season_rating >= 7.4:
             club = random.choice(elite_teams)
             price = ((int(random.triangular(min_value, max_value + 1, max_value)))/1000000)
-            if club["name"] not in clubs_seen:
+            if club["name"] not in clubs_seen and club != user_team:
                 teams_offering.append([club, price])
                 clubs_seen.add(club["name"])
 
         if player.season_rating < 7.4:
             club = random.choice(mid_table_teams)
             price = ((int(random.randint(min_value, max_value + 1)))/1000000)
-            if club["name"] not in clubs_seen:
+            if club["name"] not in clubs_seen and club != user_team:
                 teams_offering.append([club, price])
                 clubs_seen.add(club["name"])
 
         if player.season_rating <= 7.0:
-            club_one = random.choice(mid_table_teams)
-            price_one = ((int(random.randint(min_value, max_value + 1)))/1000000)
+            club = random.choice(mid_table_teams)
+            price = ((int(random.randint(min_value, max_value + 1)))/1000000)
 
 
-            if club_one["name"] not in clubs_seen:
-                teams_offering.append([club_one,price_one])
-                clubs_seen.add(club_one["name"])
+            if club["name"] not in clubs_seen and club != user_team:
+                teams_offering.append([club,price])
+                clubs_seen.add(club["name"])
 
         if player.season_rating < 6.8:
             club = random.choice(lower_teams)
             price = ((int(random.triangular(min_value, max_value + 1, min_value))) / 1000000)
-            if club["name"] not in clubs_seen:
+            if club["name"] not in clubs_seen and club != user_team:
                 teams_offering.append([club,price])
                 clubs_seen.add(club["name"])
 
@@ -236,18 +237,18 @@ def display_career_stats(player, clubs_played):
     time.sleep(2)
     print(f"⚽UCL Goals: {player.ucl_goals}⚽".center(100, " "))
     time.sleep(2)
-    print(f"🎯UCL Assists: {player.ucl_assists}🎯".center(100, " "))
+    print(f"🎯UCL Assists: {player.ucl_assists}🎯".center(99, " "))
     time.sleep(1)
     print()
 
-    print(f"Seasons in the Europa League: {player.europa_seasons}".center(100," "))
+    print(f"Seasons in the Europa League: {player.europa_seasons}".center(101," "))
     time.sleep(2)
     print(f"⚽Europa League Goals: {player.europa_goals}⚽".center(100, " "))
     time.sleep(2)
-    print(f"🎯Europa League Assists: {player.europa_assists}🎯".center(100, " "))
+    print(f"🎯Europa League Assists: {player.europa_assists}🎯".center(99, " "))
     time.sleep(1)
     print()
-    print(f"Seasons in the Conference League: {player.conf_seasons}".center(100," "))
+    print(f"Seasons in the Conference League: {player.conf_seasons}".center(101," "))
     time.sleep(2)
 
     print(f"⚽Conference League Goals: {player.conf_goals}⚽".center(100, " "))
@@ -272,8 +273,8 @@ def display_career_stats(player, clubs_played):
     print()
     time.sleep(2)
     print(f"⚽Career Goals: {player.career_goals}⚽".center(100," "))
-    print(f"🎯Career Assists: {player.career_assists}🎯".center(100, " "))
-    print(f"Career Rating: {round(player.calculate_career_rating(),1)}".center(100," "))
+    print(f"🎯Career Assists: {player.career_assists}🎯".center(99, " "))
+    print(f"💫Career Rating: {round(player.calculate_career_rating(),1)}💫".center(100," "))
     print()
 
 
@@ -327,6 +328,7 @@ def career(teams,efl_teams):
     prem_teams.remove(user_team)
 
     if player.display_role() == "defender":
+
         #allows the defender to contribute to the defensive rating of the team
         player.defensive_contribution(user_team)
 
@@ -341,7 +343,7 @@ def career(teams,efl_teams):
 
 
         if (actual_season_num % 3 == 0 and actual_season_num != career_length) or user_relegated:
-            options = transfer_options(player,prem_teams,player.min_value, player.max_value)
+            options = transfer_options(player,prem_teams,player.min_value, player.max_value,user_team)
             user_choice = choose_transfer(options,user_relegated)
 
             if user_choice != "0":
@@ -349,6 +351,7 @@ def career(teams,efl_teams):
                     if player.display_role() == "defender":
 
                         #resets players defensive contribution to team if they weren't relegated
+
                         player.reset_defensive_contribution(user_team)
 
                 user_team = options[int(user_choice)-1][0]
@@ -357,7 +360,8 @@ def career(teams,efl_teams):
             else:
                 if player.display_role() == "defender":
 
-                    #resets defensive contribution anyways to be updated after stat changes
+                    #resets defensive contribution anyway to be updated after stat changes
+
                     player.reset_defensive_contribution(user_team)
 
             player.player_improvement()

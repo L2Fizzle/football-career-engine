@@ -270,9 +270,8 @@ def relegation_and_promotion(prem_teams,efl_teams,relegated_teams,user_team,play
         if team == user_team:
             relegated = True
             if player.display_role() == "defender":
-
+                #resets player's defensive affect on team
                 player.reset_defensive_contribution(user_team)
-
 
     return relegated
 
