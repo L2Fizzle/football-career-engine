@@ -112,7 +112,7 @@ class Player:
         :return:
         """
 
-        self.position = random.choice(POSITIONS_LIST)
+        self.position = random.choice(DEFENDER_LIST)
 
         self.age = random.randint(15,20)
         self.career_length = random.randint(15,23)
@@ -139,11 +139,11 @@ class Player:
         self.strength = random.randint(1,10)
         self.iq = random.randint(1,10)
 
-        self.attacking_ability = round((self.shooting + self.iq)/2)
-        self.playmaking_ability = round((self.passing + self.iq)/2)
+        self.attacking_ability = round((self.shooting*2 + self.iq)/3)
+        self.playmaking_ability = round((self.passing*2 + self.iq)/3)
         self.height = random.randint(150,210)
 
-        self.chance_per_shot = self.attacking_ability * 0.045
+        self.chance_per_shot = self.attacking_ability * 0.03
         self.chance_per_created = self.playmaking_ability * 0.04 #chance of getting an assist per chance created
 
     def display_name(self):
@@ -255,6 +255,13 @@ class Player:
         self.min_value = 0
         self.max_value = 0
 
+    def defensive_contribution(self,team):
+        team["defense"] += self.defending/10
+
+    def reset_defensive_contribution(self,team):
+        team["defense"] -= self.defending/10
+
+
     def shot_attempt(self,opponent_defense,team_offence):
         chance = self.chance_per_shot
 
@@ -264,7 +271,7 @@ class Player:
 
         chance *= modifier
         #balances chance
-        chance = max(0.02,min(0.5,chance))
+        chance = max(0.02,min(0.45,chance))
 
         if chance >= random.random():
             self.match_goals += 1
@@ -572,7 +579,7 @@ class Player:
         else:
             print("No")
             time.sleep(2)
-    def european_GA(self):
+    def european_ga(self):
         """
         determines the number of european goals and asssist based on the user's attributes
         :return: Changes attributes in place
@@ -602,7 +609,7 @@ class Player:
         :param
         :return:
         """
-        self.european_GA()
+        self.european_ga()
 
         ucl_seasons = self.ucl_seasons
         europa_seasons = self.europa_seasons

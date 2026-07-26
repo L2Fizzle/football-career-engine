@@ -326,13 +326,17 @@ def career(teams,efl_teams):
 
     prem_teams.remove(user_team)
 
+    if player.display_role() == "defender":
+        #allows the defender to contribute to the defensive rating of the team
+        player.defensive_contribution(user_team)
+
     for season in range(career_length):
         actual_season_num = season+1
         print(f"\n🦁Season {actual_season_num}🦁")
         relegated_clubs = Prem_season.simulate_season(prem_teams,player,user_team)
         prem_teams.append(user_team)
         full_relegated_info = Prem_season.get_relegated_info(prem_teams,relegated_clubs)
-        user_relegated = Prem_season.relegation_and_promotion(prem_teams,efl_teams,full_relegated_info,user_team)
+        user_relegated = Prem_season.relegation_and_promotion(prem_teams,efl_teams,full_relegated_info,user_team,player)
         print(f"\n{player.display_name()} Transfer value: £{round(player.transfer_value, 1)}M")
 
 
@@ -341,16 +345,29 @@ def career(teams,efl_teams):
             user_choice = choose_transfer(options,user_relegated)
 
             if user_choice != "0":
+                if not user_relegated:
+                    if player.display_role() == "defender":
+
+                        #resets players defensive contribution to team if they weren't relegated
+                        player.reset_defensive_contribution(user_team)
 
                 user_team = options[int(user_choice)-1][0]
 
                 clubs_played_for.append(user_team["name"])
+            else:
+                if player.display_role() == "defender":
+
+                    #resets defensive contribution anyways to be updated after stat changes
+                    player.reset_defensive_contribution(user_team)
 
             player.player_improvement()
             print(f"\nAttributes after season {actual_season_num}:")
             time.sleep(1)
             print(f"Team: {user_team["name"]}")
             show_stats(player)
+            if player.display_role() == "defender":
+
+                player.defensive_contribution(user_team)
 
         prem_teams.remove(user_team)
         player.check_highest()

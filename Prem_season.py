@@ -240,13 +240,14 @@ def get_relegated_info(teams,relegated_teams):
         full_info.append(lookup[team])
     return full_info
 
-def relegation_and_promotion(prem_teams,efl_teams,relegated_teams,user_team):
+def relegation_and_promotion(prem_teams,efl_teams,relegated_teams,user_team,player):
     """
     removes relegated clubs from premier league and randomly chooses three championship clubs to be promoted
     :param prem_teams: list containing all premier league teams
     :param efl_teams: list containing most probable clubs to be promoted from efl championshio
     :param relegated_teams: teams that finished 18th or below
     :param user_team: the user's team
+    :param player: user's player
     :return: None: prints promoted teams and adjusts lists
     """
     relegated = False
@@ -268,6 +269,9 @@ def relegation_and_promotion(prem_teams,efl_teams,relegated_teams,user_team):
         efl_teams.append(team)
         if team == user_team:
             relegated = True
+            if player.display_role() == "defender":
+
+                player.reset_defensive_contribution(user_team)
 
 
     return relegated
