@@ -331,6 +331,7 @@ def career(teams,efl_teams):
 
         #allows the defender to contribute to the defensive rating of the team
         player.defensive_contribution(user_team)
+        player.strength_contribution(user_team)
 
     for season in range(career_length):
         actual_season_num = season+1
@@ -353,6 +354,7 @@ def career(teams,efl_teams):
                         #resets players defensive contribution to team if they weren't relegated
 
                         player.reset_defensive_contribution(user_team)
+                        player.reset_strength_contribution(user_team)
 
                 user_team = options[int(user_choice)-1][0]
 
@@ -363,6 +365,7 @@ def career(teams,efl_teams):
                     #resets defensive contribution anyway to be updated after stat changes
 
                     player.reset_defensive_contribution(user_team)
+                    player.reset_strength_contribution(user_team)
 
             player.player_improvement()
             print(f"\nAttributes after season {actual_season_num}:")
@@ -372,6 +375,7 @@ def career(teams,efl_teams):
             if player.display_role() == "defender":
 
                 player.defensive_contribution(user_team)
+                player.strength_contribution(user_team)
 
         prem_teams.remove(user_team)
         player.check_highest()

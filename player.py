@@ -255,6 +255,29 @@ class Player:
         self.min_value = 0
         self.max_value = 0
 
+    def strength_contribution(self,team):
+        """
+        adjusts user team's defense based on user's strength stat (only for defenders)
+        :param team: user's team
+        :return:
+        """
+        team_defense = team["defense"]
+        strength_modifier = (self.strength - 5)*0.1
+        if strength_modifier + team_defense > 10:
+            team["defense"] = 10.0
+        else:
+            team["defense"] += strength_modifier
+
+    def reset_strength_contribution(self,team):
+        """
+        resets user team's defense rating
+        used when user transfers
+        :param team: user's team
+        :return:
+        """
+        strength_modifier = (self.strength - 5)*0.1
+        team["defense"] -= strength_modifier
+
     def defensive_contribution(self,team):
         """
         adjusts user team's defense based on user's defensive stat (only for defenders)
