@@ -524,29 +524,29 @@ class Player:
         min_value = 0
         max_value = 0
         if self.season_rating >= 8.2:
-            min_value += 100000000
+            min_value += 80000000
         elif self.season_rating >= 7.5:
-            min_value += 70000000
-        elif self.season_rating >= 7.1:
-            min_value += 50000000
-        elif self.season_rating >= 6.8:
-            min_value += 30000000
+            min_value += 60000000
+        elif self.season_rating >= 7.0:
+            min_value += 45000000
+        elif self.season_rating >= 6.5:
+            min_value += 25000000
         else:
-            min_value += 10000000
+            min_value += 8000000
 
         max_value += min_value
         if self.display_role() == "attacker":
-            max_value += self.season_goals * 2000000
+            max_value += self.season_goals * 1500000
             max_value += self.season_assists * 1000000
             max_value += self.season_dribbles * 500000
         elif self.display_role() == "midfielder":
-            max_value += self.season_goals * 2000000
+            max_value += self.season_goals * 1500000
             max_value += self.season_assists * 2000000
             max_value += self.season_dribbles * 500000
         elif self.display_role() == "defender":
-            max_value += self.season_goals * 2000000
-            max_value += self.season_assists * 2000000
-            max_value += self.season_clean_sheets * 2000000
+            max_value += self.season_goals * 1000000
+            max_value += self.season_assists * 1000000
+            max_value += self.season_clean_sheets * 1500000
 
         self.transfer_value = (min_value + max_value) /2000000
 

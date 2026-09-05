@@ -162,11 +162,15 @@ def transfer_options(player,teams,min_value,max_value,user_team):
     :param user_team: the user's team (used to make sure they don't offer)
     :return: teams_offering(list): list of the teams offering a transfer
     """
+    # includes big six and aston villa
     elite_teams = teams[0:5]
+    elite_teams.append(teams[9])
+    elite_teams.append(teams[16])
+    #lower rated big six clubs can still make smaller transfer offers
     mid_table_teams = teams[5:11]
     lower_teams = teams[11:20]
 
-    num_interested = random.randint(1,2) #randomizes number of interested teams from each category
+    num_interested = random.randint(1,3) #randomizes number of interested teams from each category
 
     teams_offering = []
     clubs_seen = set()
@@ -174,35 +178,25 @@ def transfer_options(player,teams,min_value,max_value,user_team):
     #teams offering depends on player's season. Better season = better teams calling
     for team_offering in range(num_interested):
 
-        if player.season_rating >= 7.4:
+        if player.season_rating >= 7.4 or player.transfer_value > 90000000:
             club = random.choice(elite_teams)
-            price = ((int(random.triangular(min_value, max_value + 1, max_value)))/1000000)
-            if club["name"] not in clubs_seen and club != user_team:
-                teams_offering.append([club, price])
-                clubs_seen.add(club["name"])
+            price = round((random.triangular(min_value, round(max_value + 1), max_value))/1000000)
 
-        if player.season_rating < 7.4:
+        elif 6.5 < player.season_rating < 7.4 and player.transfer_value < 100000000:
             club = random.choice(mid_table_teams)
-            price = ((int(random.randint(min_value, max_value + 1)))/1000000)
-            if club["name"] not in clubs_seen and club != user_team:
-                teams_offering.append([club, price])
-                clubs_seen.add(club["name"])
+            price = round((random.randint(min_value, round(((max_value*2)+min_value)/3)))/1000000) #allows for more realistic transfer offers for mid table clubs
 
-        if player.season_rating <= 7.0:
-            club = random.choice(mid_table_teams)
-            price = ((int(random.randint(min_value, max_value + 1)))/1000000)
-
-
-            if club["name"] not in clubs_seen and club != user_team:
-                teams_offering.append([club,price])
-                clubs_seen.add(club["name"])
-
-        if player.season_rating < 6.8:
+        elif player.season_rating <= 6.5:
             club = random.choice(lower_teams)
-            price = ((int(random.triangular(min_value, max_value + 1, min_value))) / 1000000)
-            if club["name"] not in clubs_seen and club != user_team:
-                teams_offering.append([club,price])
-                clubs_seen.add(club["name"])
+            price = round((random.triangular(min_value, max_value,min_value))/1000000) #lower ceiling for bottom premier league clubs
+
+        else:
+            club = random.choice(teams)
+            price = round((random.triangular(min_value, player.transfer_value, min_value)) / 1000000)
+
+        if club["name"] not in clubs_seen and club != user_team:
+            teams_offering.append([club,price])
+            clubs_seen.add(club["name"])
 
     return teams_offering
 
@@ -228,7 +222,7 @@ def display_career_stats(player, clubs_played):
 
     print(f"⚽Most Goals in a Season: {player.highest_goals}⚽".center(100, " "))
     print(f"🎯Most Assists in a Season: {player.highest_assists}🎯".center(100, " "))
-    print(f"🏆Highest Transfer Value: £{player.highest_value}M🏆".center(100, " "),"\n")
+    print(f"🏆Highest Transfer Value: €{player.highest_value}M🏆".center(100, " "),"\n")
 
     print(" European Competitions".center(100," "))
     time.sleep(1)
@@ -289,7 +283,7 @@ def choose_transfer(options,relegated):
     print(f"\n{num_of_options} clubs want to sign you!")
     time.sleep(2)
     for club in options:
-        print(f"{club[0]["name"]} wants to sign you for £{round(club[1],1)}M")
+        print(f"{club[0]["name"]} wants to sign you for €{round(club[1],1)}M")
         time.sleep(2)
 
     while True:
@@ -340,7 +334,7 @@ def career(teams,efl_teams):
         prem_teams.append(user_team)
         full_relegated_info = Prem_season.get_relegated_info(prem_teams,relegated_clubs)
         user_relegated = Prem_season.relegation_and_promotion(prem_teams,efl_teams,full_relegated_info,user_team,player)
-        print(f"\n{player.display_name()} Transfer value: £{round(player.transfer_value, 1)}M")
+        print(f"\n{player.display_name()} estimated transfer value: €{round(player.transfer_value, 1)}M")
 
 
         if (actual_season_num % 3 == 0 and actual_season_num != career_length) or user_relegated:
