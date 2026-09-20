@@ -291,6 +291,12 @@ def display_career_stats(player, clubs_played):
 
 
 def choose_transfer(options,relegated):
+    """
+    Provides transfer options and allows user to choose their club
+    :param options(List): Teams offering a transfer
+    :param relegated(Bool): Used to Identify  if user can stay at current club
+    :return: user_choice(int): The user;s choice of club
+    """
     possible_choice = ["0","1","2","3","4","5","6","7"]
     if relegated:
         possible_choice.remove("0")

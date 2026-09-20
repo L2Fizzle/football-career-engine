@@ -161,35 +161,30 @@ class Player:
     def display_name(self):
         """
         displays player's name
-        :return:
         """
         return self.name
 
     def display_age(self):
         """
         displays player age
-        :return:
         """
         return self.age
 
     def display_career_length(self):
         """
         displays player career length
-        :return:
         """
         return self.career_length
 
     def display_position(self):
         """
         displays player position
-        :return:
         """
         return self.position
 
     def display_role(self):
         """
         displays player role based on position
-        :return:
         """
 
         if self.position in ["LWB", "RWB", "LB", "RB", "CB"]:
@@ -203,7 +198,6 @@ class Player:
         return self.pace
 
     def display_shooting(self):
-
         return self.shooting
 
     def display_passing(self):
@@ -248,6 +242,9 @@ class Player:
         self.age += 1
 
     def clear_match_stats(self):
+        """
+        Clears stats at the end of every match
+        """
         self.match_goals = 0
         self.match_assists = 0
         self.match_dribbles = 0
@@ -257,6 +254,9 @@ class Player:
         self.match_rating = 6.0
 
     def clear_season_stats(self):
+        """
+        Clears stats at the end of every season
+        """
         self.season_goals = 0
         self.season_assists = 0
         self.season_dribbles = 0
@@ -339,6 +339,13 @@ class Player:
             self.career_goals += 1
 
     def key_pass(self, opponent_defense,team_offence):
+        """
+        Calculates whether a key pass is converted into and assist
+            - Uses playmaking ability and modifiers based on user's team and opponent
+        :param opponent_defense: defense rating of opponent's team
+        :param team_offence: user team's offence
+        :return: None: Updated assists
+        """
         assist_chance = self.chance_per_created
 
         modifier = 1
@@ -358,6 +365,10 @@ class Player:
 
 
     def calculate_passes(self):
+        """
+        Calculates user's pass attempts and accuracy based on ratings and positions for realism
+        :return:
+        """
         if self.position in  ["ST", "CF", "LW", "RW"]:
             if self.passing <= 5:
                 pass_attempts = random.randint(8,18)
@@ -393,7 +404,15 @@ class Player:
 
         self.match_passes = round(pass_attempts*accuracy)
         self.match_pass_accuracy = accuracy
+
     def dribble_attempt(self, opponent_defense):
+        """
+        calculates dribbling success based on user's dribbling, opponent's defense, and randomness
+            - Randomness used for unpredictability of ball movement (could be a bounce off the defender,
+                                                                     or they lose the ball from a slip)
+        :param opponent_defense: Opponent's defense level
+        :return:
+        """
         dribble_chance = self.dribbling - (opponent_defense / 2)
 
         successful_dribble_odds = random.randint(0, 10)
@@ -403,12 +422,22 @@ class Player:
             self.season_dribbles += 1
 
     def add_clean_sheet(self):
+        """
+        Updates number of clean sheets if obtained after match
+        :return:
+        """
         self.clean_sheet += 1
         self.season_clean_sheets += 1
         self.career_clean_sheets += 1
 
 
     def calculate_match_rating(self):
+        """
+        Uses player's stats to update match rating
+            - adds additional if defender obtains clean sheet
+            - updates average season and career rating
+        :return:
+        """
         self.match_rating += self.match_goals
         self.match_rating += self.match_assists * 0.7
         self.match_rating += self.match_dribbles * 0.4
@@ -427,13 +456,26 @@ class Player:
         return self.match_rating
 
     def calculate_season_rating(self):
+        """
+        Calculates average season rating
+        :return:
+        """
         self.season_rating = round(self.season_rating/38,2)
 
     def premier_league_winner(self):
+        """
+        Adds premier league title to user's trophy collection if won
+        :return:
+        """
         self.prem_titles += 1
         self.season_titles = 1
 
     def change_player_stat(self,amount):
+        """
+        Changes player's stat (could be an upgrade or downgrade)
+        :param amount: The amount which the stat will be changed
+        :return:
+        """
         attribute_list = ["pace", "shooting", "passing", "dribbling", "defending", "strength","iq"]
 
 
@@ -675,7 +717,7 @@ class Player:
         conf_seasons = self.conf_seasons
 
         while ucl_seasons > 0:
-            odds = 12
+            odds = 10
             won = random.randint(1, 100)
             if odds >= won:
                 self.ucl_titles += 1
@@ -684,7 +726,7 @@ class Player:
 
         while europa_seasons > 0:
 
-            odds = 40
+            odds = 35
             won = random.randint(1, 100)
             if odds >= won:
                 self.europa_titles += 1
@@ -701,6 +743,10 @@ class Player:
             conf_seasons -= 1
 
     def calculate_career_rating(self):
+        """
+        Calculates average career rating
+        :return:
+        """
         average_career_rating = self.career_rating/(38*self.career_length)
         return average_career_rating
 
