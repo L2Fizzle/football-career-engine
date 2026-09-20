@@ -35,6 +35,7 @@ class Player:
 
         self.age = 0
         self.career_length = 0
+        self.seasons_left = 0
 
         #desc = description
         self.pace = 0
@@ -128,6 +129,7 @@ class Player:
 
         self.age = random.randint(15,20)
         self.career_length = random.randint(15,23)
+        self.seasons_left = self.career_length
 
         self.pace = random.randint(1,10)
         if self.position in ATTACKER_LIST:
@@ -176,6 +178,12 @@ class Player:
         """
         return self.career_length
 
+    def display_seasons_left(self):
+        """
+        displays number of seasons left
+        """
+        return self.seasons_left
+
     def display_position(self):
         """
         displays player position
@@ -193,6 +201,13 @@ class Player:
             return "midfielder"
         else:
             return "attacker"
+
+    def decrement_seasons(self):
+        """
+        decrements number of seasons left
+        :return:
+        """
+        self.seasons_left -= 1
 
     def display_pace(self):
         return self.pace
@@ -590,11 +605,11 @@ class Player:
 
         max_value += min_value
         if self.display_role() == "attacker":
-            max_value += self.season_goals * 1500000
+            max_value += self.season_goals * 2000000
             max_value += self.season_assists * 1000000
             max_value += self.season_dribbles * 500000
         elif self.display_role() == "midfielder":
-            max_value += self.season_goals * 1500000
+            max_value += self.season_goals * 2000000
             max_value += self.season_assists * 2000000
             max_value += self.season_dribbles * 500000
         elif self.display_role() == "defender":

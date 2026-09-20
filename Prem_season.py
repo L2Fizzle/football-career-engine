@@ -315,16 +315,16 @@ def european_qualification(player, user_position):
     :param user_position: position of user team in the table
     :return: None: changes competition for player next season
     """
-
-    if user_position <= 5:
-        player.ucl_seasons += 1
-        return "Champions League"
-    elif user_position <= 7:
-        player.europa_seasons += 1
-        return "Europa League"
-    elif user_position == 8:
-        player.conf_seasons += 1
-        return "Conference League"
+    if player.display_seasons_left() != 1:
+        if user_position <= 5:
+            player.ucl_seasons += 1
+            return "Champions League"
+        elif user_position <= 7:
+            player.europa_seasons += 1
+            return "Europa League"
+        elif user_position == 8:
+            player.conf_seasons += 1
+            return "Conference League"
     return None
 
 def simulate_season(full_teams,player,user_team):
@@ -439,6 +439,8 @@ def simulate_season(full_teams,player,user_team):
         print(f"\n{team_name} qualified for {competition}!")
 
     player.calculate_transfer_value()
+
+    player.decrement_seasons()
 
 
     return relegated_teams
