@@ -1,3 +1,15 @@
+"""
+Player Module
+
+Defines and Manages:
+    - Player class and attributes
+    - Ratings
+    - Match performances
+    - Development/Transfer valuation
+    - Progression throughout the football career
+
+Author: L2Fizzle
+"""
 import random
 import time
 import math

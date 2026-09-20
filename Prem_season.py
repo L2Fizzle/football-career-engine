@@ -1,3 +1,15 @@
+"""
+Premier League Season Simulation
+
+Handles:
+    - Simulation of a Premier League season
+    - Fixture generation
+    - Match outcomes
+    - Player performances
+    - Promotion and relegation
+
+Author: L2Fizzle
+"""
 import random
 import time
 import math

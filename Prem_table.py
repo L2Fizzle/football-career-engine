@@ -1,3 +1,11 @@
+"""
+Premier League Table Module
+
+Handles:
+    - Creating, updating, sorting, and displaying the league table based on simulated match results
+
+Author: L2Fizzle
+"""
 import random
 
 

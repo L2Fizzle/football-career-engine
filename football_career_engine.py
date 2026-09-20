@@ -1,3 +1,18 @@
+"""
+Football Career Engine
+
+Main program for the Football Career Engine.
+
+Handles:
+    - Career and league initialization
+    - Player creation
+    - Season Progression
+    - Transfers
+    - Overall career tracking
+
+Author: L2Fizzle
+"""
+
 import random
 import time
 import Prem_season
