@@ -133,9 +133,9 @@ class Player:
 
         self.pace = random.randint(1,10)
         if self.position in ATTACKER_LIST:
-            self.shooting = random.randint(3,10)
+            self.shooting = random.randint(3,9)
         elif self.position in MIDFIELDER_LIST:
-            self.shooting = random.randint(2,9)
+            self.shooting = random.randint(2,8)
         else:
             self.shooting = random.randint(1,7)
 
@@ -153,11 +153,16 @@ class Player:
         self.strength = random.randint(1,10)
         self.iq = random.randint(1,10)
 
-        self.attacking_ability = round((self.shooting*2 + self.iq)/3)
-        self.playmaking_ability = round((self.passing*2 + self.iq)/3)
+        self.attacking_ability = round((self.shooting*3 + self.iq)/4)
+        self.playmaking_ability = round((self.passing*3 + self.iq)/4)
         self.height = random.randint(150,210)
 
-        self.chance_per_shot = self.attacking_ability * 0.03
+        if self.position in ATTACKER_LIST:
+            self.chance_per_shot = self.attacking_ability * 0.03
+        elif self.position in MIDFIELDER_LIST:
+            self.chance_per_shot = self.attacking_ability * 0.02
+        else:
+            self.chance_per_shot = self.attacking_ability * 0.015
         self.chance_per_created = self.playmaking_ability * 0.04 #chance of getting an assist per chance created
 
     def display_name(self):

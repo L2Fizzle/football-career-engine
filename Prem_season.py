@@ -22,15 +22,18 @@ def simulation_speed():
     :return: sim_speed(int): the number of seconds it takes for each match to display.
     """
     while True:
-        sim_type = input("\nWould you like a quick sim or slow sim for this season? (type q for quick and s for slow): ")
-        if sim_type.lower() == "q":
+        sim_type = input("\nWould you like a season sim, quick game sim, or slow game sim for this season? (type s for season and q for quick game and g for slow game): ")
+        if sim_type.lower() == "s":
             sim_speed = 0
             return sim_speed
-        elif sim_type.lower() == "s":
+        elif sim_type.lower() == "q":
+            sim_speed = 2
+            return sim_speed
+        elif sim_type.lower() == "g":
             sim_speed = 5
             return sim_speed
         else:
-            print("Please type either q or s")
+            print("Please type either s or g")
 
 def matchday_team(teams, teams_played):
     """
