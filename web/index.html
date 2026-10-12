@@ -6,12 +6,12 @@
     <!-- brings in tailwind CSS to use its classes --> 
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-900 text-gray-100 font-sans antialiased">
+<body class="w-full bg-gradient-to-b from-gray-900 via gray-900 to-gray-950 border-b border-gray-800/80 font-sans antialiased">
     <!-- Hero Section -->
-    <header class="max-w-4xl mx-auto pt-20 pb-16 px-6 text-center">
+    <header class="max-w-5xl mx-auto pt-20 pb-10 px-6 text-center">
         
-        <h1 class="text-5xl font-extrabold text-white mb-6 tracking-tight">
-            Football Career <span class="text-green-500">Engine</span>
+        <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white mb-10 tracking-tight">
+            ⚽ Football Career <span class="text-green-500">Engine ⚽</span>
         </h1>
         
         <p class="text-xl text-gray-400 mb-10 leading-relaxed">
@@ -22,12 +22,58 @@
             <a href="https://github.com/L2Fizzle/football-career-engine" target="_blank" class="bg-green-600 hover:bg-green-500 text-white font-semibold py-3 px-8 rounded-lg transition duration-200">
                 View on GitHub
             </a>
-            <a href="#features" class="bg-gray-800 hover:bg-gray-700 text-white font-semibold py-3 px-8 rounded-lg transition duration-200">
+            <a href="https://github.com/L2Fizzle/football-career-engine/blob/main/README.md#features" target="_blank" class="bg-gray-800 hover:bg-gray-700 text-white font-semibold py-3 px-8 rounded-lg transition duration-200">
                 Learn More
             </a>
         </div>
-
     </header>
+
+    <!-- Features & Architecture Section -->
+    <section id="features" class="w-full bg-gray-950 py-5"> 
+        <div class="max-w-5xl mx-auto px-6 py-16">
+        
+        <h2 class="text-4xl font-bold text-center text-white mb-12">
+            Engine <span class="text-green-500">Architecture</span>
+        </h2>
+        
+        <!-- The Grid Container -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            
+            <!-- Card 1 -->
+            <div class="bg-gray-800 p-8 rounded-xl border border-gray-700 hover:border-green-500 transition duration-300">
+                <h3 class="text-xl font-bold text-green-400 mb-3">Event-Driven Match Engine</h3>
+                <p class="text-gray-400 leading-relaxed">
+                    Matches are generated through simulated events (shots, key passes, dribbles) weighed dynamically against player attributes, team strength, and opponent defense.
+                </p>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="bg-gray-800 p-8 rounded-xl border border-gray-700 hover:border-green-500 transition duration-300">
+                <h3 class="text-xl font-bold text-green-400 mb-3">Object-Oriented Player Model</h3>
+                <p class="text-gray-400 leading-relaxed">
+                    A dedicated <code>Player</code> class centralizes state management, making attribute progression, transfer valuation, and lifetime career tracking clean and maintainable.
+                </p>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="bg-gray-800 p-8 rounded-xl border border-gray-700 hover:border-green-500 transition duration-300">
+                <h3 class="text-xl font-bold text-green-400 mb-3">Dynamic League Tables</h3>
+                <p class="text-gray-400 leading-relaxed">
+                    Simulates full Premier League seasons with realistic promotion and relegation logic. Team data is handled via external I/O files for easy balancing and scaling.
+                </p>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="bg-gray-800 p-8 rounded-xl border border-gray-700 hover:border-green-500 transition duration-300">
+                <h3 class="text-xl font-bold text-green-400 mb-3">Modular Architecture</h3>
+                <p class="text-gray-400 leading-relaxed">
+                    Built for the long term. Separation of concerns is built-in, with match simulation, league management, and application flow split into distinct Python modules.
+                </p>
+            </div>
+
+        </div>
+    </div>
+    </section>
     
 </body>
 </html>
